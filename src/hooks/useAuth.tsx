@@ -17,6 +17,7 @@ interface AuthContextType {
     email: string,
     password: string,
     captchaToken: string,
+    signupData?: Record<string, unknown>,
   ) => Promise<{ error: any }>;
   signIn: (
     email: string,
@@ -164,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     email: string,
     password: string,
     captchaToken: string,
+    signupData?: Record<string, unknown>,
   ) => {
     const captchaResult = await verifyCaptchaToken(captchaToken, "signup");
 
@@ -174,7 +176,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: window.location.origin },
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: signupData,
+      },
     });
     return { error };
   };

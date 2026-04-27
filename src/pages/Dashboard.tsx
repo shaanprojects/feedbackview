@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,8 @@ import {
   BarChart3,
   Copy,
   Download,
+  Eye,
+  EyeOff,
   LayoutDashboard,
   Link,
   LogOut,
@@ -79,19 +81,38 @@ type ReviewLink = {
   url: string;
 };
 
+type TeamMember = {
+  id: string;
+  business_id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  created_at: string;
+};
+
 export default function Dashboard() {
   const { user, signOut, loading: authLoading } = useAuth();
   const navigate = useNavigate();
+  const { section } = useParams<{ section?: string }>();
+
+  type DashboardTab = "dashboard" | "analytics" | "configuration" | "profile";
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [reviewLinks, setReviewLinks] = useState<ReviewLink[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [newPlatform, setNewPlatform] = useState("");
   const [newUrl, setNewUrl] = useState("");
+  const [showPlatformSetupGuide, setShowPlatformSetupGuide] = useState(false);
   const [businessName, setBusinessName] = useState("");
-  const [activeTab, setActiveTab] = useState<
-    "dashboard" | "analytics" | "configuration"
-  >("dashboard");
+  const [activeTab, setActiveTab] = useState<DashboardTab>("dashboard");
+  const [profileFirstName, setProfileFirstName] = useState("");
+  const [profileLastName, setProfileLastName] = useState("");
+  const [profilePassword, setProfilePassword] = useState("");
+  const [showProfilePassword, setShowProfilePassword] = useState(false);
+  const [monthlyGoalConfig, setMonthlyGoalConfig] = useState(30);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isSavingGoal, setIsSavingGoal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [showBusinessQr, setShowBusinessQr] = useState(false);
@@ -108,7 +129,36 @@ export default function Dashboard() {
   }, [authLoading, navigate, user]);
 
   useEffect(() => {
+    const validSections: DashboardTab[] = [
+      "dashboard",
+      "analytics",
+      "configuration",
+      "profile",
+    ];
+
+    if (!section) {
+      setActiveTab("dashboard");
+      return;
+    }
+
+    if (validSections.includes(section as DashboardTab)) {
+      setActiveTab(section as DashboardTab);
+      return;
+    }
+
+    navigate("/dashboard", { replace: true });
+  }, [navigate, section]);
+
+  useEffect(() => {
     if (user) fetchData();
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) return;
+
+    const metadata = user.user_metadata ?? {};
+    setProfileFirstName((metadata.firstName as string) ?? "");
+    setProfileLastName((metadata.lastName as string) ?? "");
   }, [user]);
 
   useEffect(() => {
@@ -146,8 +196,15 @@ export default function Dashboard() {
         supabase.from("review_links").select("*").eq("business_id", biz.id),
       ]);
 
+      const { data: members } = await supabase
+        .from("team_members")
+        .select("*")
+        .eq("business_id", biz.id)
+        .order("created_at", { ascending: true });
+
       setFeedbacks((fb as Feedback[]) || []);
       setReviewLinks((links as ReviewLink[]) || []);
+      setTeamMembers((members as TeamMember[]) || []);
     }
     setLoading(false);
   };
@@ -155,6 +212,18 @@ export default function Dashboard() {
   const reviewUrl = business
     ? `${window.location.origin}/review/${business.id}`
     : "";
+  const selectedPlan = String(user?.user_metadata?.selectedPlan || "starter");
+  const teamMemberLimit =
+    selectedPlan === "enterprise"
+      ? 50
+      : selectedPlan === "professional"
+        ? 10
+        : 3;
+  const monthlyGoalStorageKey = business
+    ? `feedbackview_monthly_goal_${business.id}`
+    : user
+      ? `feedbackview_monthly_goal_${user.id}`
+      : "feedbackview_monthly_goal";
   const totalFeedback = feedbacks.length;
   const averageRating = totalFeedback
     ? feedbacks.reduce((sum, item) => sum + item.rating, 0) / totalFeedback
@@ -236,11 +305,32 @@ export default function Dashboard() {
             100,
         );
 
-  const monthlyGoal = Math.max(15, activeLinks * 10 || 15);
+  const recommendedMonthlyGoal = Math.max(15, activeLinks * 10 || 15);
+  const monthlyGoal = Math.max(1, monthlyGoalConfig);
   const monthlyProgress = Math.min(
     100,
-    Math.round((feedbackThisMonth / monthlyGoal) * 100),
+    Math.round((feedbackThisMonth / Math.max(1, monthlyGoal)) * 100),
   );
+
+  useEffect(() => {
+    const storedValue = window.localStorage.getItem(monthlyGoalStorageKey);
+
+    if (storedValue) {
+      const parsed = Number(storedValue);
+      if (Number.isFinite(parsed) && parsed > 0) {
+        setMonthlyGoalConfig(parsed);
+        return;
+      }
+    }
+
+    const metadataGoal = Number(user?.user_metadata?.monthly_review_goal);
+    if (Number.isFinite(metadataGoal) && metadataGoal > 0) {
+      setMonthlyGoalConfig(metadataGoal);
+      return;
+    }
+
+    setMonthlyGoalConfig(recommendedMonthlyGoal);
+  }, [monthlyGoalStorageKey, recommendedMonthlyGoal, user?.user_metadata]);
 
   const dateRangeLabel = `${currentMonthStart.toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -255,31 +345,72 @@ export default function Dashboard() {
       ? "Dashboard"
       : activeTab === "analytics"
         ? "Analytics"
-        : "Configuration";
+        : activeTab === "profile"
+          ? "Profile Settings"
+          : "Configuration";
 
   const pageDescription =
     activeTab === "dashboard"
       ? `Growth overview for ${business?.name || "your business"}`
       : activeTab === "analytics"
         ? "Usage and engagement data from your current account"
-        : "Manage business profile, links, and review collection assets";
+        : activeTab === "profile"
+          ? "Manage your profile details and monthly review goal"
+          : "Manage business profile, links, and review collection assets";
 
-  const trendData = Array.from({ length: 4 }, (_, weekIdx) => {
-    const weekStart = new Date();
-    weekStart.setDate(weekStart.getDate() - (3 - weekIdx) * 7);
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 7);
+  const trendData = useMemo(() => {
+    const currentWeekStart = new Date();
+    const dayOffset = (currentWeekStart.getDay() + 6) % 7;
+    currentWeekStart.setDate(currentWeekStart.getDate() - dayOffset);
+    currentWeekStart.setHours(0, 0, 0, 0);
 
-    const weekCount = feedbacks.filter((fb) => {
-      const fbDate = new Date(fb.created_at);
-      return fbDate >= weekStart && fbDate < weekEnd;
-    }).length;
+    // Show the last 8 completed weeks so the trend timeline does not shift with partial-week data.
+    const fullWeekBoundary = new Date(currentWeekStart);
 
-    return {
-      week: `Week ${weekIdx + 1}`,
-      count: weekCount,
-    };
-  });
+    return Array.from({ length: 8 }, (_, idx) => {
+      const weekStart = new Date(fullWeekBoundary);
+      weekStart.setDate(fullWeekBoundary.getDate() - (8 - idx) * 7);
+
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 7);
+
+      const weekCount = feedbacks.filter((fb) => {
+        const fbDate = new Date(fb.created_at);
+        return fbDate >= weekStart && fbDate < weekEnd;
+      }).length;
+
+      return {
+        week: weekStart.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+        }),
+        range: `${weekStart.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+        })} - ${new Date(weekEnd.getTime() - 1).toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+        })}`,
+        count: weekCount,
+      };
+    });
+  }, [feedbacks]);
+
+  const trendRangeLabel =
+    trendData.length > 0
+      ? `${trendData[0].week} - ${trendData[trendData.length - 1].range
+          .split(" - ")
+          .at(-1)}`
+      : "No data";
+
+  const handleTabChange = (nextTab: DashboardTab) => {
+    setActiveTab(nextTab);
+    if (nextTab === "dashboard") {
+      navigate("/dashboard");
+      return;
+    }
+    navigate(`/dashboard/${nextTab}`);
+  };
 
   const copyLink = () => {
     navigator.clipboard.writeText(reviewUrl);
@@ -317,6 +448,57 @@ export default function Dashboard() {
       .eq("id", business.id);
     setBusiness({ ...business, name: businessName.trim() });
     toast.success("Business name updated!");
+  };
+
+  const saveProfileSettings = async () => {
+    if (!user) return;
+
+    setIsSavingProfile(true);
+    const mergedMetadata = {
+      ...(user.user_metadata ?? {}),
+      firstName: profileFirstName.trim(),
+      lastName: profileLastName.trim(),
+    };
+
+    const { error } = await supabase.auth.updateUser({
+      data: mergedMetadata,
+      ...(profilePassword.trim() ? { password: profilePassword.trim() } : {}),
+    });
+
+    if (error) {
+      toast.error(error.message);
+      setIsSavingProfile(false);
+      return;
+    }
+
+    setProfilePassword("");
+    toast.success("Profile settings updated.");
+    setIsSavingProfile(false);
+  };
+
+  const saveMonthlyGoal = async () => {
+    if (!user) return;
+
+    const nextGoal = Math.max(1, Math.round(monthlyGoalConfig));
+    setIsSavingGoal(true);
+    window.localStorage.setItem(monthlyGoalStorageKey, String(nextGoal));
+
+    const { error } = await supabase.auth.updateUser({
+      data: {
+        ...(user.user_metadata ?? {}),
+        monthly_review_goal: nextGoal,
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+      setIsSavingGoal(false);
+      return;
+    }
+
+    setMonthlyGoalConfig(nextGoal);
+    toast.success("Monthly review goal updated.");
+    setIsSavingGoal(false);
   };
 
   const addReviewLink = async () => {
@@ -463,7 +645,7 @@ export default function Dashboard() {
             <div className="ml-auto flex w-full items-center gap-2 sm:w-auto sm:flex-row sm:items-center">
               <nav className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-xl border border-slate-300/80 bg-white/75 p-1 backdrop-blur-sm sm:w-auto sm:flex-none">
                 <button
-                  onClick={() => setActiveTab("dashboard")}
+                  onClick={() => handleTabChange("dashboard")}
                   className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
                     activeTab === "dashboard"
                       ? "bg-teal-600 text-white shadow-sm"
@@ -476,7 +658,7 @@ export default function Dashboard() {
                   </span>
                 </button>
                 <button
-                  onClick={() => setActiveTab("analytics")}
+                  onClick={() => handleTabChange("analytics")}
                   className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
                     activeTab === "analytics"
                       ? "bg-teal-600 text-white shadow-sm"
@@ -489,7 +671,7 @@ export default function Dashboard() {
                   </span>
                 </button>
                 <button
-                  onClick={() => setActiveTab("configuration")}
+                  onClick={() => handleTabChange("configuration")}
                   className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
                     activeTab === "configuration"
                       ? "bg-teal-600 text-white shadow-sm"
@@ -498,7 +680,20 @@ export default function Dashboard() {
                 >
                   <span className="inline-flex items-center gap-2">
                     <Settings className="h-4 w-4" />
-                    <span className="hidden sm:inline">Configuration</span>
+                    <span className="hidden sm:inline">Settings</span>
+                  </span>
+                </button>
+                <button
+                  onClick={() => handleTabChange("profile")}
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
+                    activeTab === "profile"
+                      ? "bg-teal-600 text-white shadow-sm"
+                      : "text-slate-700 hover:bg-white hover:text-teal-700"
+                  }`}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    <span className="hidden sm:inline">Profile</span>
                   </span>
                 </button>
               </nav>
@@ -765,7 +960,8 @@ export default function Dashboard() {
                     <div>
                       <CardTitle className="text-lg">Feedback Trend</CardTitle>
                       <CardDescription>
-                        Weekly movement across your feedback pipeline
+                        Feedback activity across the last 8 completed weeks (
+                        {trendRangeLabel})
                       </CardDescription>
                     </div>
                     <div className="grid grid-cols-3 gap-2 text-center">
@@ -806,6 +1002,12 @@ export default function Dashboard() {
                         />
                         <YAxis stroke="#334155" style={{ fontSize: "12px" }} />
                         <Tooltip
+                          labelFormatter={(value, payload) => {
+                            const item = payload?.[0]?.payload as
+                              | { range?: string }
+                              | undefined;
+                            return item?.range ?? String(value);
+                          }}
                           contentStyle={{
                             backgroundColor: "#fff",
                             border: "1px solid #CBD5E1",
@@ -1072,9 +1274,9 @@ export default function Dashboard() {
                 <CardContent className="space-y-4">
                   <div className="flex items-baseline gap-2">
                     <p className="text-4xl font-bold text-blue-700 sm:text-5xl">
-                      1
+                      {teamMembers.length}
                     </p>
-                    <p className="text-lg text-gray-400">/ 10</p>
+                    <p className="text-lg text-gray-400">/ {teamMemberLimit}</p>
                   </div>
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between">
@@ -1082,20 +1284,33 @@ export default function Dashboard() {
                         Usage
                       </span>
                       <span className="rounded-full border border-blue-200 bg-blue-50 px-3.5 py-1.5 text-sm font-bold text-blue-700">
-                        10%
+                        {Math.min(
+                          100,
+                          Math.round(
+                            (teamMembers.length / teamMemberLimit) * 100,
+                          ),
+                        )}
+                        %
                       </span>
                     </div>
                     <div className="metric-track">
                       <div
                         className="metric-fill bg-blue-600"
-                        style={{ width: "10%" }}
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            Math.round(
+                              (teamMembers.length / teamMemberLimit) * 100,
+                            ),
+                          )}%`,
+                        }}
                       >
                         <span className="metric-knob" />
                       </div>
                     </div>
                   </div>
                   <p className="text-xs font-medium text-gray-600">
-                    Seats currently used
+                    Seats currently used on {selectedPlan} plan
                   </p>
                 </CardContent>
               </Card>
@@ -1176,10 +1391,11 @@ export default function Dashboard() {
                       Team
                     </p>
                     <p className="mt-2 text-2xl font-bold text-gray-900">
-                      1 Member
+                      {teamMembers.length} Member
+                      {teamMembers.length === 1 ? "" : "s"}
                     </p>
                     <p className="mt-1 text-sm text-gray-600">
-                      Scale to 10 seats on current plan
+                      Plan limit: {teamMemberLimit} seats
                     </p>
                   </div>
                   <div className="rounded-lg border border-slate-200/90 bg-white/75 p-4">
@@ -1213,9 +1429,9 @@ export default function Dashboard() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <Card className="glass-card glass-card-hover">
                 <CardHeader>
-                  <CardTitle>Business Configuration</CardTitle>
+                  <CardTitle>Business Settings</CardTitle>
                   <CardDescription>
-                    Update your profile and settings
+                    Manage business details and public review link
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1260,15 +1476,60 @@ export default function Dashboard() {
 
               <Card className="glass-card glass-card-hover">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Link className="h-5 w-5 text-blue-600" />
-                    Review Platforms
-                  </CardTitle>
-                  <CardDescription>
-                    Manage destinations for positive reviews
-                  </CardDescription>
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Link className="h-5 w-5 text-blue-600" />
+                        Review Platforms
+                      </CardTitle>
+                      <CardDescription>
+                        Manage destinations for positive reviews
+                      </CardDescription>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowPlatformSetupGuide((prev) => !prev)}
+                      className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-blue-700 transition-colors hover:bg-blue-50"
+                    >
+                      How to setup
+                    </button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {showPlatformSetupGuide && (
+                    <div className="rounded-lg border border-blue-200 bg-blue-50/70 p-4 text-sm text-slate-700">
+                      <p className="mb-2 font-semibold text-slate-900">
+                        How to setup Google review link
+                      </p>
+                      <ol className="list-decimal space-y-1 pl-5">
+                        <li>
+                          Open this link:{" "}
+                          <a
+                            href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-1 inline-block max-w-full break-words text-blue-700 underline [overflow-wrap:anywhere]"
+                          >
+                            https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder
+                          </a>
+                        </li>
+                        <li>Search your shop name in the map search.</li>
+                        <li>Copy the placeid.</li>
+                        <li>
+                          Use this URL format and replace {"{"}placeid{"}"}:{" "}
+                          <span className="mt-1 block max-w-full break-words font-mono text-xs text-slate-800 [overflow-wrap:anywhere]">
+                            https://search.google.com/local/writereview?placeid=
+                            {"{"}placeid{"}"}
+                          </span>
+                        </li>
+                        <li>
+                          Copy the final link and save it here in Review
+                          Platforms.
+                        </li>
+                      </ol>
+                    </div>
+                  )}
+
                   <div className="max-h-64 space-y-2 overflow-y-auto pr-2">
                     {reviewLinks.length === 0 && (
                       <div className="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-center text-sm text-gray-500">
@@ -1322,6 +1583,176 @@ export default function Dashboard() {
                       </Button>
                     </div>
                   </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card glass-card-hover lg:col-span-2">
+                <CardHeader>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <CardTitle>Team Management</CardTitle>
+                      <CardDescription>
+                        Manage team members in dedicated list, add, and edit
+                        screens
+                      </CardDescription>
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate("/dashboard/team-members")}
+                    >
+                      Open Full Team Screens
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-5">
+                  <div className="rounded-xl border border-slate-200/90 bg-white/80 p-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-sm font-semibold text-slate-800">
+                        Plan: {selectedPlan}
+                      </p>
+                      <p className="text-sm text-slate-600">
+                        Seats used: {teamMembers.length}/{teamMemberLimit}
+                      </p>
+                    </div>
+                    <div className="mt-3 h-2 rounded-full bg-slate-200">
+                      <div
+                        className="h-2 rounded-full bg-gradient-to-r from-blue-600 to-teal-600"
+                        style={{
+                          width: `${Math.min(
+                            100,
+                            Math.round(
+                              (teamMembers.length / teamMemberLimit) * 100,
+                            ),
+                          )}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                    Use the dedicated Team Members module for all add, edit, and
+                    remove actions. Limits are enforced based on your current
+                    subscription plan.
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {activeTab === "profile" && (
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+              <Card className="glass-card glass-card-hover">
+                <CardHeader>
+                  <CardTitle>Profile Settings</CardTitle>
+                  <CardDescription>
+                    Update your account profile and login security
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input
+                      value={user?.email ?? ""}
+                      readOnly
+                      className="border-slate-200 bg-slate-100"
+                    />
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>First Name</Label>
+                      <Input
+                        value={profileFirstName}
+                        onChange={(e) => setProfileFirstName(e.target.value)}
+                        placeholder="First name"
+                        className="border-slate-200 bg-white/85"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Last Name</Label>
+                      <Input
+                        value={profileLastName}
+                        onChange={(e) => setProfileLastName(e.target.value)}
+                        placeholder="Last name"
+                        className="border-slate-200 bg-white/85"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>New Password</Label>
+                    <div className="relative">
+                      <Input
+                        type={showProfilePassword ? "text" : "password"}
+                        value={profilePassword}
+                        onChange={(e) => setProfilePassword(e.target.value)}
+                        placeholder="Leave blank to keep current password"
+                        className="border-slate-200 bg-white/85 pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowProfilePassword((prev) => !prev)}
+                        className="absolute inset-y-0 right-2 inline-flex items-center text-slate-500 transition-colors hover:text-slate-800"
+                        aria-label={
+                          showProfilePassword
+                            ? "Hide password"
+                            : "Show password"
+                        }
+                      >
+                        {showProfilePassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  <Button
+                    onClick={saveProfileSettings}
+                    disabled={isSavingProfile}
+                  >
+                    {isSavingProfile ? "Saving..." : "Save Profile"}
+                  </Button>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card glass-card-hover">
+                <CardHeader>
+                  <CardTitle>Monthly Review Goal</CardTitle>
+                  <CardDescription>
+                    Add or edit your monthly target for collected feedback
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Monthly Goal Target</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      step={1}
+                      value={monthlyGoalConfig}
+                      onChange={(e) =>
+                        setMonthlyGoalConfig(
+                          Math.max(1, Number(e.target.value || 1)),
+                        )
+                      }
+                      className="border-slate-200 bg-white/85"
+                    />
+                  </div>
+
+                  <div className="rounded-xl border border-slate-300/80 bg-white/80 px-4 py-3 text-sm text-slate-700">
+                    Current progress: {feedbackThisMonth} of {monthlyGoal} this
+                    month ({monthlyProgress}%)
+                  </div>
+
+                  <div className="rounded-xl border border-slate-300/80 bg-white/80 px-4 py-3 text-sm text-slate-700">
+                    Recommended baseline based on active channels:{" "}
+                    {recommendedMonthlyGoal}
+                  </div>
+
+                  <Button onClick={saveMonthlyGoal} disabled={isSavingGoal}>
+                    {isSavingGoal ? "Saving..." : "Save Monthly Goal"}
+                  </Button>
                 </CardContent>
               </Card>
             </div>

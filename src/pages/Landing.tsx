@@ -119,6 +119,7 @@ const testimonials = [
 
 const pricingPlans = [
   {
+    id: "starter",
     name: "Starter",
     price: "29",
     desc: "Perfect for small businesses",
@@ -130,6 +131,7 @@ const pricingPlans = [
     ],
   },
   {
+    id: "professional",
     name: "Professional",
     price: "79",
     desc: "For growing businesses",
@@ -143,6 +145,7 @@ const pricingPlans = [
     popular: true,
   },
   {
+    id: "enterprise",
     name: "Enterprise",
     price: "Custom",
     desc: "For large organizations",
@@ -1030,7 +1033,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-8">
             {pricingPlans.map((plan, i) => (
               <div
-                key={i}
+                key={plan.id}
                 className={`rounded-xl overflow-hidden transition-all reveal-on-scroll ${plan.popular ? "ring-2 ring-teal-600 md:scale-105 md:shadow-2xl" : "border border-gray-200 shadow-md"} ${plan.popular ? "bg-gradient-to-br from-teal-50 to-blue-50" : "bg-white"}`}
                 data-reveal
                 data-delay={90 + i * 90}
@@ -1053,7 +1056,10 @@ export default function Landing() {
                       <span className="text-gray-600 text-sm">/month</span>
                     )}
                   </div>
-                  <Link to="/auth" className="block mb-8">
+                  <Link
+                    to={`/auth?mode=signup&plan=${plan.id}`}
+                    className="block mb-8"
+                  >
                     <Button
                       className={`w-full ${plan.popular ? "bg-teal-600 hover:bg-teal-700" : "border border-gray-300"}`}
                       variant={plan.popular ? "default" : "outline"}

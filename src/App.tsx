@@ -7,8 +7,10 @@ import { AuthProvider } from "@/hooks/useAuth";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import TeamMembers from "./pages/TeamMembers";
 import ReviewPage from "./pages/ReviewPage";
 import Admin from "./pages/Admin";
+import AdminLogin from "./pages/AdminLogin";
 import NotFound from "./pages/NotFound";
 import InfoPage from "./pages/InfoPage";
 
@@ -25,7 +27,18 @@ const App = () => (
             <Route path="/" element={<Landing />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:section" element={<Dashboard />} />
+            <Route path="/dashboard/team-members" element={<TeamMembers />} />
+            <Route
+              path="/dashboard/team-members/add"
+              element={<TeamMembers />}
+            />
+            <Route
+              path="/dashboard/team-members/:memberId/edit"
+              element={<TeamMembers />}
+            />
             <Route path="/review/:businessId" element={<ReviewPage />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/features" element={<InfoPage pageKey="features" />} />
             <Route path="/pricing" element={<InfoPage pageKey="pricing" />} />

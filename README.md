@@ -153,7 +153,7 @@ git push
 npm run build
 ```
 
-If build succeeds, deploy `dist/` using your preferred hosting platform (for example Vercel, Netlify, Cloudflare Pages, or static hosting behind an API/Supabase backend).
+
 
 ## Security Notes
 

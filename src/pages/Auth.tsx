@@ -136,7 +136,7 @@ export default function Auth() {
   const [city, setCity] = useState("");
   const [stateCode, setStateCode] = useState("");
   const [zipCode, setZipCode] = useState("");
-  const [country, setCountry] = useState("United States");
+  const [country, setCountry] = useState("");
   const [cardNumber, setCardNumber] = useState("");
   const [expiration, setExpiration] = useState("");
   const [cvv, setCvv] = useState("");
@@ -208,18 +208,9 @@ export default function Auth() {
       return false;
     }
 
-    if (!/^[A-Za-z]{2}$/.test(stateCode.trim())) {
-      toast.error("State must be a 2-letter US state code (for example, CA).");
-      return false;
-    }
 
-    if (!/^\d{5}(-\d{4})?$/.test(zipCode.trim())) {
-      toast.error("Zip code must be a valid US zip code.");
-      return false;
-    }
-
-    if (country !== "United States") {
-      toast.error("Only United States addresses are supported right now.");
+    if (!country.trim()) {
+      toast.error("Please enter your country.");
       return false;
     }
 
@@ -234,14 +225,18 @@ export default function Auth() {
       return false;
     }
 
-    if (!/^(0[1-9]|1[0-2])\/\d{4}$/.test(expiration.trim())) {
-      toast.error("Expiration must be in MM/YYYY format.");
+    if (!/^(0[1-9]|1[0-2])\/(\d{2}|\d{4})$/.test(expiration.trim())) {
+      toast.error("Expiration must be in MM/YY or MM/YYYY format.");
       return false;
     }
 
     const [monthRaw, yearRaw] = expiration.split("/");
     const month = Number(monthRaw);
-    const year = Number(yearRaw);
+    let year = Number(yearRaw);
+    if (yearRaw.length === 2) {
+      year += 2000;
+    }
+
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
     const currentYear = now.getFullYear();
@@ -328,9 +323,7 @@ export default function Auth() {
         if (error) {
           toast.error(error.message);
         } else {
-          toast.success(
-            "Account created! Check your email to confirm, or sign in directly.",
-          );
+          toast.success("Account created successfully");
           setIsLogin(true);
         }
       }
@@ -508,14 +501,8 @@ export default function Auth() {
                       <Input
                         id="state"
                         value={stateCode}
-                        onChange={(e) =>
-                          setStateCode(
-                            e.target.value
-                              .replace(/[^a-zA-Z]/g, "")
-                              .slice(0, 2),
-                          )
-                        }
-                        placeholder="CA"
+                        onChange={(e) => setStateCode(e.target.value)}
+                        placeholder="e.g. Tamil Nadu"
                         required={!isLogin}
                       />
                     </div>
@@ -528,21 +515,19 @@ export default function Auth() {
                         id="zip"
                         value={zipCode}
                         onChange={(e) => setZipCode(e.target.value)}
-                        placeholder="94105"
+                        placeholder="e.g. 600083"
                         required={!isLogin}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="country">Country</Label>
-                      <select
+                      <Input
                         id="country"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                        placeholder="e.g. United States"
                         required={!isLogin}
-                      >
-                        <option value="United States">United States</option>
-                      </select>
+                      />
                     </div>
                   </div>
                 </div>
@@ -572,13 +557,13 @@ export default function Auth() {
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="expiration">Expiration (MM/YYYY)</Label>
+                      <Label htmlFor="expiration">Expiration (MM/YY)</Label>
                       <Input
                         id="expiration"
                         inputMode="numeric"
                         value={expiration}
                         onChange={(e) => handleExpirationChange(e.target.value)}
-                        placeholder="MM/YYYY"
+                        placeholder="MM/YY"
                         required={!isLogin}
                       />
                     </div>

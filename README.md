@@ -164,3 +164,6 @@ If build succeeds, deploy `dist/` using your preferred hosting platform (for exa
 ## Status
 
 FeedbackView is actively evolving. Core flow is production-ready, with opportunities to expand analytics depth, role management, and platform integrations.
+
+---
+*Last updated for deployment test.*

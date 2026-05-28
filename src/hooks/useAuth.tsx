@@ -64,7 +64,7 @@ const verifyCaptchaToken = async (
   captchaToken: string,
   action: "signin" | "signup",
 ) => {
-  const { data, error } = await supabase.functions.invoke("verify-turnstile", {
+  const { data, error } = await supabase.functions.invoke("verify-recaptcha", {
     body: {
       token: captchaToken,
       action,

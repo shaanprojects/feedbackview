@@ -10,11 +10,10 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type TurnstileVerifyResponse = {
+type RecaptchaVerifyResponse = {
   success: boolean;
   challenge_ts?: string;
   hostname?: string;
-  action?: string;
   "error-codes"?: string[];
 };
 
@@ -24,11 +23,11 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const secret = Deno.env.get("TURNSTILE_SECRET_KEY");
+    const secret = Deno.env.get("RECAPTCHA_SECRET_KEY");
 
     if (!secret) {
       return Response.json(
-        { success: false, error: "Missing TURNSTILE_SECRET_KEY" },
+        { success: false, error: "Missing RECAPTCHA_SECRET_KEY" },
         { status: 500, headers: corsHeaders },
       );
     }
@@ -45,16 +44,12 @@ Deno.serve(async (req: Request) => {
       );
     }
 
-    const remoteIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
     const verifyPayload = new URLSearchParams();
     verifyPayload.set("secret", secret);
     verifyPayload.set("response", token);
-    if (remoteIp) {
-      verifyPayload.set("remoteip", remoteIp);
-    }
 
     const verifyResponse = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      "https://www.google.com/recaptcha/api/siteverify",
       {
         method: "POST",
         headers: {
@@ -64,7 +59,7 @@ Deno.serve(async (req: Request) => {
       },
     );
 
-    const verifyData = (await verifyResponse.json()) as TurnstileVerifyResponse;
+    const verifyData = (await verifyResponse.json()) as RecaptchaVerifyResponse;
 
     if (!verifyData.success) {
       return Response.json(
@@ -72,16 +67,6 @@ Deno.serve(async (req: Request) => {
           success: false,
           error: "Captcha verification failed",
           codes: verifyData["error-codes"] ?? [],
-        },
-        { status: 401, headers: corsHeaders },
-      );
-    }
-
-    if (action && verifyData.action && action !== verifyData.action) {
-      return Response.json(
-        {
-          success: false,
-          error: "Captcha action mismatch",
         },
         { status: 401, headers: corsHeaders },
       );

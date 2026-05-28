@@ -1,6 +1,6 @@
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { Turnstile } from "@marsidev/react-turnstile";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -142,17 +142,17 @@ export default function Auth() {
   const [cvv, setCvv] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const [turnstileRenderKey, setTurnstileRenderKey] = useState(0);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
-  const turnstileSiteKey = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
   const cardDigits = useMemo(() => cardNumber.replace(/\D/g, ""), [cardNumber]);
   const cardBrand = useMemo(() => detectCardBrand(cardDigits), [cardDigits]);
 
   const resetCaptcha = () => {
     setCaptchaToken(null);
-    setTurnstileRenderKey((prev) => prev + 1);
+    recaptchaRef.current?.reset();
   };
 
   useEffect(() => {
@@ -276,8 +276,8 @@ export default function Auth() {
       return;
     }
 
-    if (!turnstileSiteKey) {
-      toast.error("Captcha is not configured. Add VITE_TURNSTILE_SITE_KEY.");
+    if (!recaptchaSiteKey) {
+      toast.error("Captcha is not configured. Add VITE_RECAPTCHA_SITE_KEY.");
       return;
     }
 
@@ -604,34 +604,22 @@ export default function Auth() {
 
             <div className="space-y-2">
               <Label>Security Check</Label>
-              {turnstileSiteKey ? (
-                <Turnstile
-                  key={turnstileRenderKey}
-                  siteKey={turnstileSiteKey}
-                  onSuccess={(token) => {
-                    setCaptchaToken(token);
-                  }}
-                  onExpire={() => {
-                    setCaptchaToken(null);
-                  }}
-                  onError={() => {
-                    setCaptchaToken(null);
-                    toast.error(
-                      "Captcha verification failed. Please try again.",
-                    );
-                  }}
-                  options={{
-                    theme: "light",
-                    size: "normal",
-                    appearance: "always",
-                    retry: "auto",
-                    execution: "render",
-                    action: isLogin ? "signin" : "signup",
-                  }}
-                />
+              {recaptchaSiteKey ? (
+                <div className="flex justify-center md:justify-start">
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={recaptchaSiteKey}
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                    onErrored={() => {
+                      setCaptchaToken(null);
+                      toast.error("Captcha verification failed. Please try again.");
+                    }}
+                  />
+                </div>
               ) : (
                 <p className="text-sm text-red-600">
-                  Captcha not configured. Set VITE_TURNSTILE_SITE_KEY to enable
+                  Captcha not configured. Set VITE_RECAPTCHA_SITE_KEY to enable
                   authentication.
                 </p>
               )}
@@ -639,7 +627,7 @@ export default function Auth() {
             <Button
               type="submit"
               className="w-full rounded-xl bg-teal-600 text-white hover:bg-teal-700"
-              disabled={loading || !captchaToken || !turnstileSiteKey}
+              disabled={loading || !captchaToken || !recaptchaSiteKey}
             >
               {loading
                 ? "Please wait..."

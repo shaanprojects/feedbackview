@@ -1,4 +1,4 @@
 project_id = "rolaenfanyzinpebfgup"
 
-[functions.verify-turnstile]
+[functions.verify-recaptcha]
 verify_jwt = false

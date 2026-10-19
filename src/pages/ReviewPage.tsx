@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import {
@@ -58,6 +59,7 @@ export default function ReviewPage() {
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
   const [message, setMessage] = useState("");
+  const [contactInfo, setContactInfo] = useState("");
   const [reviewLinks, setReviewLinks] = useState<
     { platform_name: string; url: string }[]
   >([]);
@@ -117,6 +119,7 @@ export default function ReviewPage() {
     setRating(nextRating);
     setSubmitted(false);
     setMessage("");
+    setContactInfo("");
 
     if (nextRating >= 4) {
       setStep("positive");
@@ -231,9 +234,13 @@ export default function ReviewPage() {
     }
 
     setIsSubmitting(true);
+    const finalMessage = contactInfo.trim()
+      ? `${message.trim()}\n\nContact: ${contactInfo.trim()}`
+      : message.trim();
+
     const { error } = await supabase
       .from("feedback")
-      .insert({ business_id: businessId!, rating, message: message.trim() });
+      .insert({ business_id: businessId!, rating, message: finalMessage });
 
     setIsSubmitting(false);
 
@@ -484,6 +491,21 @@ export default function ReviewPage() {
                 />
               </div>
 
+              {/* Optional Contact Field */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-[#555555] flex items-center justify-between">
+                  <span>Your email or phone</span>
+                  <span className="text-[11px] text-[#888888] font-normal">Optional</span>
+                </label>
+                <Input
+                  type="text"
+                  placeholder="e.g. name@example.com or (555) 000-0000"
+                  value={contactInfo}
+                  onChange={(e) => setContactInfo(e.target.value)}
+                  className="h-11 rounded-2xl border-[#ECEAE5] bg-[#FAF9F5]/50 text-sm font-normal text-[#111111] placeholder:text-[#999999] focus:border-[#111111] focus:bg-white focus:ring-0"
+                />
+              </div>
+
               {/* Confidentiality Notice */}
               <div className="flex items-start gap-2.5 rounded-2xl bg-[#FAF9F5] p-3.5 border border-[#ECEAE5] text-xs text-[#555555]">
                 <ShieldCheck className="h-4 w-4 shrink-0 text-[#111111] mt-0.5" />
@@ -532,6 +554,7 @@ export default function ReviewPage() {
                     setSubmitted(false);
                     setRating(0);
                     setMessage("");
+                    setContactInfo("");
                   }}
                   className="rounded-xl border-[#ECEAE5] text-xs font-bold text-[#444444] hover:bg-[#FAF9F5]"
                 >

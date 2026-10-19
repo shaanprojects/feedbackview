@@ -818,7 +818,7 @@ export default function Dashboard() {
 
       {/* Slider / Sidebar Navigation */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r border-slate-200/80 bg-white shadow-xl backdrop-blur-xl transition-all duration-300 ease-in-out lg:static lg:shadow-none shrink-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r-2 border-black bg-white shadow-xl backdrop-blur-xl transition-all duration-300 ease-in-out lg:static lg:shadow-none shrink-0 overflow-x-hidden ${
           mobileNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         } ${sidebarCollapsed ? "lg:w-16" : "w-64"}`}
       >
@@ -953,16 +953,27 @@ export default function Dashboard() {
         </div>
 
         {/* User Profile & Logout - Integrated Clean Row with Person Icon */}
-        <div className="border-t border-slate-100 p-3 shrink-0 bg-white">
+        <div className="border-t border-slate-100 p-2 sm:p-3 shrink-0 bg-white">
           <div
-            className={`flex items-center gap-2.5 rounded-xl p-1.5 hover:bg-slate-50 transition-colors ${
-              sidebarCollapsed ? "justify-center p-1" : ""
+            className={`flex items-center rounded-xl transition-colors ${
+              sidebarCollapsed
+                ? "flex-col items-center gap-2 p-1"
+                : "flex-row items-center gap-2.5 p-1.5 hover:bg-slate-50"
             }`}
           >
-            {/* Real circular profile person icon */}
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 shadow-2xs">
+            {/* Circular profile person icon */}
+            <div
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 shadow-2xs cursor-pointer hover:bg-slate-200 transition-colors"
+              title={
+                sidebarCollapsed
+                  ? `${profileFirstName ? `${profileFirstName} ${profileLastName}` : user?.email || "Profile"}`
+                  : undefined
+              }
+              onClick={() => handleTabChange("profile")}
+            >
               <User className="h-4.5 w-4.5 text-slate-600" />
             </div>
+
             {!sidebarCollapsed && (
               <div className="min-w-0 flex-1">
                 <p className="truncate text-xs font-bold text-slate-900 leading-tight">
@@ -975,6 +986,7 @@ export default function Dashboard() {
                 </p>
               </div>
             )}
+
             <button
               type="button"
               onClick={() => {
@@ -993,7 +1005,7 @@ export default function Dashboard() {
       {/* Main Content Area - Full height with independent vertical scroll */}
       <div className="flex min-w-0 flex-1 flex-col h-screen overflow-y-auto overflow-x-hidden">
         {/* Sleek Content Topbar */}
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-slate-100 bg-white/85 px-4 lg:px-6 backdrop-blur-md">
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b-2 border-black bg-white/85 px-4 lg:px-6 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <button
               type="button"

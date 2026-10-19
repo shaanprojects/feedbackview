@@ -856,7 +856,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Business Workspace Badge */}
+        {/* Current Plan Card */}
         {!sidebarCollapsed ? (
           <div className="px-3 pt-3.5 pb-1">
             <div
@@ -867,29 +867,21 @@ export default function Dashboard() {
                   el?.scrollIntoView({ behavior: "smooth" });
                 }, 100);
               }}
-              className="group rounded-xl border border-slate-200/90 bg-slate-50/70 p-2.5 hover:bg-white hover:border-teal-300 hover:shadow-xs cursor-pointer transition-all active:scale-[0.99]"
-              title="Configure business & review platforms"
+              className="group rounded-xl border border-slate-200/90 bg-slate-50/70 px-3 py-2.5 hover:bg-white hover:border-teal-300 hover:shadow-xs cursor-pointer transition-all active:scale-[0.99]"
+              title="Click to manage subscription and review platforms"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white font-bold text-sm shadow-xs">
-                  {(businessName || "B").slice(0, 1).toUpperCase()}
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold text-slate-600">
+                    Current Plan: <span className="font-bold text-teal-700 capitalize">{selectedPlan || "Starter"}</span>
+                  </p>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center justify-between gap-1">
-                    <p className="truncate text-xs font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
-                      {businessName || "My Business"}
-                    </p>
-                    <span className="flex items-center gap-1 shrink-0 text-[10px] font-medium text-emerald-600">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Active
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-1 mt-0.5">
-                    <p className="truncate text-[11px] text-slate-500 font-medium">
-                      Current Plan: <span className="font-semibold text-teal-700 capitalize">{selectedPlan || "Starter"}</span>
-                    </p>
-                    <ChevronRight className="h-3.5 w-3.5 text-slate-300 group-hover:text-teal-600 transition-colors shrink-0" />
-                  </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Active
+                  </span>
+                  <ChevronRight className="h-3.5 w-3.5 text-slate-300 group-hover:text-teal-600 transition-colors" />
                 </div>
               </div>
             </div>
@@ -904,10 +896,10 @@ export default function Dashboard() {
                   el?.scrollIntoView({ behavior: "smooth" });
                 }, 100);
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-600 text-white font-bold text-sm shadow-xs cursor-pointer hover:scale-105 transition-transform"
-              title={`${businessName || "Business"} (Current Plan: ${selectedPlan}) - Click to configure`}
+              className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700 border border-teal-200 cursor-pointer hover:scale-105 transition-transform"
+              title={`Current Plan: ${selectedPlan} (Active) - Click to manage`}
             >
-              {(businessName || "B").slice(0, 1).toUpperCase()}
+              <span className="h-2 w-2 rounded-full bg-emerald-500" />
             </div>
           </div>
         )}
@@ -1098,7 +1090,7 @@ export default function Dashboard() {
         {/* Page Content */}
         <main className="flex-1 p-6 lg:p-8">
           <div className="mx-auto max-w-7xl space-y-8">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[3fr_1fr]">
+          <div className={`grid grid-cols-1 gap-6 ${activeTab === "dashboard" ? "lg:grid-cols-[3fr_1fr]" : ""}`}>
             <section className="relative overflow-hidden rounded-3xl border-2 border-slate-400/80 bg-gradient-to-br from-white/90 to-slate-50/80 px-4 py-5 shadow-sm backdrop-blur-md sm:px-8 sm:py-6">
               <div className="relative grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start">
                 <div>
@@ -1175,223 +1167,107 @@ export default function Dashboard() {
               </div>
             </section>
 
-            <Card className="glass-card glass-card-hover h-full border-2 border-slate-400/80">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base">
-                  {showBusinessQr ? "Business QR" : "Business Info"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {!showBusinessQr && (
-                  <>
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                        Name
-                      </p>
-                      <p className="truncate text-base font-bold text-slate-900">
-                        {business?.name || "Not Set"}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                        Status
-                      </p>
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          business?.subscription_active
-                            ? "bg-emerald-100 text-emerald-700"
-                            : "bg-red-100 text-red-700"
-                        }`}
-                      >
-                        {business?.subscription_active ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                        Links
-                      </p>
-                      <p className="text-base font-bold text-slate-900">
-                        {activeLinks}
-                      </p>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                        Feedback
-                      </p>
-                      <p className="text-base font-bold text-slate-900">
-                        {totalFeedback}
-                      </p>
-                    </div>
-                  </>
-                )}
-
-                {!showBusinessQr && (
-                  <div className="pt-1">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                      onClick={() => setShowBusinessQr(true)}
-                    >
-                      Show QR
-                    </Button>
-                  </div>
-                )}
-
-                {showBusinessQr && (
-                  <div className="space-y-3">
-                    <div className="flex justify-center rounded-xl border border-slate-200 bg-white/85 p-3">
-                      {reviewUrl ? (
-                        <QRCodeSVG id="qr-code" value={reviewUrl} size={112} />
-                      ) : (
-                        <p className="text-xs font-medium text-slate-500">
-                          No review link yet
+            {activeTab === "dashboard" && (
+              <Card className="glass-card glass-card-hover h-full border-2 border-slate-400/80">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base">
+                    {showBusinessQr ? "Business QR" : "Business Info"}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {!showBusinessQr && (
+                    <>
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                          Name
                         </p>
-                      )}
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                      onClick={downloadQR}
-                      disabled={!reviewUrl}
-                    >
-                      <Download className="mr-1 h-4 w-4" /> Download QR
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                      onClick={() => setShowBusinessQr(false)}
-                    >
-                      Show Info
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {activeTab === "dashboard" && (
-            <>
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.7fr]">
-                <Card className="glass-card glass-card-hover">
-                  <CardHeader>
-                    <CardTitle className="text-lg">Overall Rating</CardTitle>
-                    <CardDescription>
-                      Your average private feedback score
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex flex-col items-center justify-center py-7">
-                    <div className="relative h-36 w-36">
-                      <svg
-                        className="h-full w-full -rotate-90"
-                        viewBox="0 0 100 100"
-                      >
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          fill="none"
-                          stroke="#E2E8F0"
-                          strokeWidth="8"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="40"
-                          fill="none"
-                          stroke="#1D4ED8"
-                          strokeWidth="8"
-                          strokeDasharray={`${(averageRating / 5) * 251.2} 251.2`}
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-4xl font-bold text-slate-900">
-                          {averageRatingText}
+                        <p className="truncate text-base font-bold text-slate-900">
+                          {business?.name || "Not Set"}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                          Status
+                        </p>
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            business?.subscription_active
+                              ? "bg-emerald-100 text-emerald-700"
+                              : "bg-red-100 text-red-700"
+                          }`}
+                        >
+                          {business?.subscription_active ? "Active" : "Inactive"}
                         </span>
                       </div>
-                    </div>
-                    <p className="mt-4 text-sm text-slate-600">
-                      Based on {totalFeedback} submitted responses
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card className="glass-card glass-card-hover">
-                  <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <CardTitle className="text-lg">Feedback Trend</CardTitle>
-                      <CardDescription>
-                        Feedback activity across the last 8 completed weeks (
-                        {trendRangeLabel})
-                      </CardDescription>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-2">
-                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
-                          Total
-                        </p>
-                        <p className="text-sm font-bold text-slate-900">
-                          {totalFeedback}
-                        </p>
-                      </div>
-                      <div className="rounded-lg border border-teal-200 bg-teal-50 px-2 py-2">
-                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
-                          Month
-                        </p>
-                        <p className="text-sm font-bold text-teal-700">
-                          {feedbackThisMonth}
-                        </p>
-                      </div>
-                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-2">
-                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                      <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
                           Links
                         </p>
-                        <p className="text-sm font-bold text-slate-900">
+                        <p className="text-base font-bold text-slate-900">
                           {activeLinks}
                         </p>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={230}>
-                      <LineChart data={trendData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-                        <XAxis
-                          dataKey="week"
-                          stroke="#334155"
-                          style={{ fontSize: "12px" }}
-                        />
-                        <YAxis stroke="#334155" style={{ fontSize: "12px" }} />
-                        <Tooltip
-                          labelFormatter={(value, payload) => {
-                            const item = payload?.[0]?.payload as
-                              | { range?: string }
-                              | undefined;
-                            return item?.range ?? String(value);
-                          }}
-                          contentStyle={{
-                            backgroundColor: "#fff",
-                            border: "1px solid #CBD5E1",
-                            borderRadius: "12px",
-                          }}
-                        />
-                        <Line
-                          type="monotone"
-                          dataKey="count"
-                          stroke="#1D4ED8"
-                          strokeWidth={3}
-                          dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
-                          activeDot={{ r: 6 }}
-                        />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-              </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                          Feedback
+                        </p>
+                        <p className="text-base font-bold text-slate-900">
+                          {totalFeedback}
+                        </p>
+                      </div>
+                    </>
+                  )}
 
+                  {!showBusinessQr && (
+                    <div className="pt-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
+                        onClick={() => setShowBusinessQr(true)}
+                      >
+                        Show QR
+                      </Button>
+                    </div>
+                  )}
+
+                  {showBusinessQr && (
+                    <div className="space-y-3">
+                      <div className="flex justify-center rounded-xl border border-slate-200 bg-white/85 p-3">
+                        {reviewUrl ? (
+                          <QRCodeSVG id="qr-code" value={reviewUrl} size={112} />
+                        ) : (
+                          <p className="text-xs font-medium text-slate-500">
+                            No review link yet
+                          </p>
+                        )}
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
+                        onClick={downloadQR}
+                        disabled={!reviewUrl}
+                      >
+                        <Download className="mr-1 h-4 w-4" /> Download QR
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
+                        onClick={() => setShowBusinessQr(false)}
+                      >
+                        Show Info
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {activeTab === "dashboard" && (
+            <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
                 <Card className="glass-card glass-card-hover border-2 border-slate-400/80">
                   <CardHeader>
@@ -1664,11 +1540,130 @@ export default function Dashboard() {
                   </CardContent>
                 </Card>
               </div>
-            </>
+            </div>
           )}
 
           {activeTab === "analytics" && (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_1.7fr]">
+                <Card className="glass-card glass-card-hover">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Overall Rating</CardTitle>
+                    <CardDescription>
+                      Your average private feedback score
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-col items-center justify-center py-7">
+                    <div className="relative h-36 w-36">
+                      <svg
+                        className="h-full w-full -rotate-90"
+                        viewBox="0 0 100 100"
+                      >
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          fill="none"
+                          stroke="#E2E8F0"
+                          strokeWidth="8"
+                        />
+                        <circle
+                          cx="50"
+                          cy="50"
+                          r="40"
+                          fill="none"
+                          stroke="#1D4ED8"
+                          strokeWidth="8"
+                          strokeDasharray={`${(averageRating / 5) * 251.2} 251.2`}
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-4xl font-bold text-slate-900">
+                          {averageRatingText}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="mt-4 text-sm text-slate-600">
+                      Based on {totalFeedback} submitted responses
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="glass-card glass-card-hover">
+                  <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <CardTitle className="text-lg">Feedback Trend</CardTitle>
+                      <CardDescription>
+                        Feedback activity across the last 8 completed weeks (
+                        {trendRangeLabel})
+                      </CardDescription>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                          Total
+                        </p>
+                        <p className="text-sm font-bold text-slate-900">
+                          {totalFeedback}
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-teal-200 bg-teal-50 px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                          Month
+                        </p>
+                        <p className="text-sm font-bold text-teal-700">
+                          {feedbackThisMonth}
+                        </p>
+                      </div>
+                      <div className="rounded-lg border border-slate-200 bg-white px-2 py-2">
+                        <p className="text-[10px] uppercase tracking-[0.12em] text-slate-500">
+                          Links
+                        </p>
+                        <p className="text-sm font-bold text-slate-900">
+                          {activeLinks}
+                        </p>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={230}>
+                      <LineChart data={trendData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+                        <XAxis
+                          dataKey="week"
+                          stroke="#334155"
+                          style={{ fontSize: "12px" }}
+                        />
+                        <YAxis stroke="#334155" style={{ fontSize: "12px" }} />
+                        <Tooltip
+                          labelFormatter={(value, payload) => {
+                            const item = payload?.[0]?.payload as
+                              | { range?: string }
+                              | undefined;
+                            return item?.range ?? String(value);
+                          }}
+                          contentStyle={{
+                            backgroundColor: "#fff",
+                            border: "1px solid #CBD5E1",
+                            borderRadius: "12px",
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="count"
+                          stroke="#1D4ED8"
+                          strokeWidth={3}
+                          dot={{ r: 4, strokeWidth: 2, fill: "#fff" }}
+                          activeDot={{ r: 6 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               <Card className="glass-card glass-card-hover">
                 <CardHeader>
                   <CardTitle className="text-base">Team Members</CardTitle>
@@ -1825,57 +1820,11 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
             </div>
-          )}
+          </div>
+        )}
 
           {activeTab === "configuration" && (
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <Card className="glass-card glass-card-hover">
-                <CardHeader>
-                  <CardTitle>Business Settings</CardTitle>
-                  <CardDescription>
-                    Manage business details and public review link
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Business Name</Label>
-                    <div className="flex flex-col gap-2 sm:flex-row">
-                      <Input
-                        value={businessName}
-                        onChange={(e) => setBusinessName(e.target.value)}
-                        placeholder="Your Business Name"
-                        className="border-slate-200 bg-white/85"
-                      />
-                      <Button
-                        onClick={updateBusinessName}
-                        className="whitespace-nowrap"
-                      >
-                        Save Name
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Review Link</Label>
-                    <div className="flex flex-col gap-2 sm:flex-row">
-                      <Input
-                        value={reviewUrl}
-                        readOnly
-                        className="border-slate-200 bg-white/85"
-                      />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={copyLink}
-                        className="self-start sm:self-auto"
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
+            <div className="grid grid-cols-1 gap-6">
               <Card id="review-platforms-card" className="glass-card glass-card-hover scroll-mt-20">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
@@ -2032,7 +1981,54 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card glass-card-hover lg:col-span-2">
+              <Card className="glass-card glass-card-hover">
+                <CardHeader>
+                  <CardTitle>Business Settings</CardTitle>
+                  <CardDescription>
+                    Manage business details and public review link
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Business Name</Label>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Input
+                        value={businessName}
+                        onChange={(e) => setBusinessName(e.target.value)}
+                        placeholder="Your Business Name"
+                        className="border-slate-200 bg-white/85"
+                      />
+                      <Button
+                        onClick={updateBusinessName}
+                        className="whitespace-nowrap"
+                      >
+                        Save Name
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Review Link</Label>
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <Input
+                        value={reviewUrl}
+                        readOnly
+                        className="border-slate-200 bg-white/85"
+                      />
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={copyLink}
+                        className="self-start sm:self-auto"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="glass-card glass-card-hover">
                 <CardHeader>
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                     <div>

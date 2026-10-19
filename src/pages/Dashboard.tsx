@@ -14,6 +14,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import {
   Card,
   CardContent,
   CardDescription,
@@ -34,18 +42,25 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   BarChart3,
+  Check,
+  ChevronRight,
   Copy,
   Download,
   Eye,
   EyeOff,
+  HelpCircle,
   LayoutDashboard,
   Link,
   LogOut,
+  Menu,
+  PanelLeft,
+  PanelLeftClose,
   Plus,
   Settings,
   Star,
   Trash2,
   User,
+  X,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -150,6 +165,12 @@ export default function Dashboard() {
   const [showPlatformSetupGuide, setShowPlatformSetupGuide] = useState(false);
   const [businessName, setBusinessName] = useState("");
   const [activeTab, setActiveTab] = useState<DashboardTab>("dashboard");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [helpModalOpen, setHelpModalOpen] = useState(false);
+  const [helpMessage, setHelpMessage] = useState("");
+  const [isSubmittingHelp, setIsSubmittingHelp] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const [profileFirstName, setProfileFirstName] = useState("");
   const [profileLastName, setProfileLastName] = useState("");
   const [profilePassword, setProfilePassword] = useState("");
@@ -473,8 +494,29 @@ export default function Dashboard() {
   };
 
   const copyLink = () => {
+    if (!reviewUrl) return;
     navigator.clipboard.writeText(reviewUrl);
-    toast.success("Link copied!");
+    setCopiedLink(true);
+    toast.success("Review link copied to clipboard!");
+    setTimeout(() => setCopiedLink(false), 2000);
+  };
+
+  const handleHelpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!helpMessage.trim()) {
+      toast.error("Please enter your support request.");
+      return;
+    }
+
+    setIsSubmittingHelp(true);
+    setTimeout(() => {
+      setIsSubmittingHelp(false);
+      setHelpModalOpen(false);
+      setHelpMessage("");
+      toast.success(
+        "Support request sent! An admin will review your message and help you.",
+      );
+    }, 500);
   };
 
   const downloadQR = () => {
@@ -757,113 +799,305 @@ export default function Dashboard() {
 
   return (
     <div
-      className="min-h-screen overflow-x-clip bg-fixed bg-cover bg-center bg-no-repeat text-slate-950"
+      className="flex h-screen w-full overflow-hidden bg-fixed bg-cover bg-center bg-no-repeat text-slate-950"
       style={{
         backgroundImage: `linear-gradient(rgba(248, 250, 252, 0.42), rgba(248, 250, 252, 0.56)), url(${dashboardBg})`,
       }}
     >
-      <header className="sticky inset-x-0 top-0 z-30 bg-transparent px-3 pt-3 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-[1.7rem] border border-slate-300/80 bg-slate-100/90 px-3 py-3 shadow-sm backdrop-blur-md sm:rounded-[2rem] sm:px-4">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-            <div className="flex items-center gap-3">
-              <BookmarkIcon className="h-7 w-7 text-slate-900" />
-              <p className="text-base font-bold tracking-tight text-slate-900 sm:text-2xl">
+      {/* Mobile backdrop for slider navigation */}
+      {mobileNavOpen && (
+        <div
+          onClick={() => setMobileNavOpen(false)}
+          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-xs transition-opacity lg:hidden"
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Slider / Sidebar Navigation */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r border-slate-200/80 bg-white shadow-xl backdrop-blur-xl transition-all duration-300 ease-in-out lg:static lg:shadow-none shrink-0 ${
+          mobileNavOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        } ${sidebarCollapsed ? "lg:w-16" : "w-64"}`}
+      >
+        {/* Sidebar Brand Header - Clean Homepage Style */}
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-100 px-4">
+          <div className="flex items-center gap-2.5 overflow-hidden">
+            <BookmarkIcon className="h-6 w-6 shrink-0 text-teal-600" />
+            {!sidebarCollapsed && (
+              <span className="truncate text-lg font-bold tracking-tight text-slate-900">
                 FeedbackView
-              </p>
-            </div>
+              </span>
+            )}
+          </div>
 
-            <div className="ml-auto flex w-full items-center gap-2 sm:w-auto sm:flex-row sm:items-center">
-              <nav className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto rounded-xl border border-slate-300/80 bg-white/75 p-1 backdrop-blur-sm sm:w-auto sm:flex-none">
-                <button
-                  onClick={() => handleTabChange("dashboard")}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
-                    activeTab === "dashboard"
-                      ? "bg-teal-600 text-white shadow-sm"
-                      : "text-slate-700 hover:bg-white hover:text-teal-700"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span className="hidden sm:inline">Dashboard</span>
-                  </span>
-                </button>
-                <button
-                  onClick={() => handleTabChange("analytics")}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
-                    activeTab === "analytics"
-                      ? "bg-teal-600 text-white shadow-sm"
-                      : "text-slate-700 hover:bg-white hover:text-teal-700"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4" />
-                    <span className="hidden sm:inline">Analytics</span>
-                  </span>
-                </button>
-                <button
-                  onClick={() => handleTabChange("configuration")}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
-                    activeTab === "configuration"
-                      ? "bg-teal-600 text-white shadow-sm"
-                      : "text-slate-700 hover:bg-white hover:text-teal-700"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <Settings className="h-4 w-4" />
-                    <span className="hidden sm:inline">Settings</span>
-                  </span>
-                </button>
-                <button
-                  onClick={() => handleTabChange("profile")}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold transition sm:px-3.5 ${
-                    activeTab === "profile"
-                      ? "bg-teal-600 text-white shadow-sm"
-                      : "text-slate-700 hover:bg-white hover:text-teal-700"
-                  }`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline">Profile</span>
-                  </span>
-                </button>
-              </nav>
+          <div className="flex items-center">
+            {/* Mobile close */}
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(false)}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 lg:hidden"
+              aria-label="Close navigation"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            {/* Desktop slider collapse toggle */}
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed((prev) => !prev)}
+              className="hidden h-8 w-8 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors lg:flex"
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {sidebarCollapsed ? (
+                <PanelLeft className="h-4 w-4" />
+              ) : (
+                <PanelLeftClose className="h-4 w-4" />
+              )}
+            </button>
+          </div>
+        </div>
 
-              <div className="relative shrink-0" ref={profileMenuRef}>
-                <button
-                  type="button"
-                  onClick={() => setProfileMenuOpen((prev) => !prev)}
-                  className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 bg-white/90 text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
-                  aria-label="Open profile menu"
-                >
-                  <User className="h-5 w-5" />
-                </button>
-
-                {profileMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-60 rounded-xl border border-slate-300/90 bg-white/95 p-3 shadow-lg backdrop-blur-sm">
-                    <div className="mb-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-600">
-                      {user?.email || "Signed in"}
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="w-full border-slate-300 bg-white px-3 text-slate-900 hover:bg-slate-100"
-                      onClick={() => {
-                        signOut();
-                        navigate("/auth");
-                      }}
-                    >
-                      <LogOut className="mr-1 h-4 w-4" />
-                      Logout
-                    </Button>
+        {/* Business Workspace Badge */}
+        {!sidebarCollapsed ? (
+          <div className="px-3 pt-3.5 pb-1">
+            <div
+              onClick={() => {
+                handleTabChange("configuration");
+                setTimeout(() => {
+                  const el = document.getElementById("review-platforms-card");
+                  el?.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
+              className="group rounded-xl border border-slate-200/90 bg-slate-50/70 p-2.5 hover:bg-white hover:border-teal-300 hover:shadow-xs cursor-pointer transition-all active:scale-[0.99]"
+              title="Configure business & review platforms"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white font-bold text-sm shadow-xs">
+                  {(businessName || "B").slice(0, 1).toUpperCase()}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-1">
+                    <p className="truncate text-xs font-bold text-slate-900 group-hover:text-teal-700 transition-colors">
+                      {businessName || "My Business"}
+                    </p>
+                    <span className="flex items-center gap-1 shrink-0 text-[10px] font-medium text-emerald-600">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Active
+                    </span>
                   </div>
-                )}
+                  <div className="flex items-center justify-between gap-1 mt-0.5">
+                    <p className="truncate text-[11px] text-slate-500 font-medium">
+                      Current Plan: <span className="font-semibold text-teal-700 capitalize">{selectedPlan || "Starter"}</span>
+                    </p>
+                    <ChevronRight className="h-3.5 w-3.5 text-slate-300 group-hover:text-teal-600 transition-colors shrink-0" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </header>
+        ) : (
+          <div className="py-3 flex shrink-0 justify-center">
+            <div
+              onClick={() => {
+                handleTabChange("configuration");
+                setTimeout(() => {
+                  const el = document.getElementById("review-platforms-card");
+                  el?.scrollIntoView({ behavior: "smooth" });
+                }, 100);
+              }}
+              className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-600 text-white font-bold text-sm shadow-xs cursor-pointer hover:scale-105 transition-transform"
+              title={`${businessName || "Business"} (Current Plan: ${selectedPlan}) - Click to configure`}
+            >
+              {(businessName || "B").slice(0, 1).toUpperCase()}
+            </div>
+          </div>
+        )}
 
-      <main className="px-3 pb-10 pt-6 sm:px-6 sm:pt-8 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-7">
+        {/* Navigation Items (Scrollable Middle) */}
+        <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
+          {!sidebarCollapsed && (
+            <p className="px-3 pb-2 pt-2 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+              Navigation
+            </p>
+          )}
+          <nav className="space-y-1">
+            {[
+              { id: "dashboard" as DashboardTab, label: "Dashboard", icon: LayoutDashboard },
+              { id: "analytics" as DashboardTab, label: "Analytics", icon: BarChart3 },
+              { id: "configuration" as DashboardTab, label: "Settings", icon: Settings },
+              { id: "profile" as DashboardTab, label: "Profile", icon: User },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    handleTabChange(tab.id);
+                    setMobileNavOpen(false);
+                  }}
+                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-all duration-150 ${
+                    sidebarCollapsed ? "justify-center px-0 h-10 w-10 mx-auto" : "h-10"
+                  } ${
+                    isActive
+                      ? "bg-teal-600 text-white shadow-xs"
+                      : "text-slate-600 hover:bg-slate-100/80 hover:text-slate-900"
+                  }`}
+                  title={sidebarCollapsed ? tab.label : undefined}
+                >
+                  <Icon
+                    className={`h-4.5 w-4.5 shrink-0 transition-colors ${
+                      isActive ? "text-white" : "text-slate-400 group-hover:text-slate-700"
+                    }`}
+                  />
+                  {!sidebarCollapsed && <span className="text-sm font-medium">{tab.label}</span>}
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* User Profile & Logout - Integrated Clean Row with Person Icon */}
+        <div className="border-t border-slate-100 p-3 shrink-0 bg-white">
+          <div
+            className={`flex items-center gap-2.5 rounded-xl p-1.5 hover:bg-slate-50 transition-colors ${
+              sidebarCollapsed ? "justify-center p-1" : ""
+            }`}
+          >
+            {/* Real circular profile person icon */}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 shadow-2xs">
+              <User className="h-4.5 w-4.5 text-slate-600" />
+            </div>
+            {!sidebarCollapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-xs font-bold text-slate-900 leading-tight">
+                  {profileFirstName
+                    ? `${profileFirstName} ${profileLastName}`
+                    : user?.email?.split("@")[0]}
+                </p>
+                <p className="truncate text-[11px] text-slate-400 mt-0.5 font-medium">
+                  {user?.email}
+                </p>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                signOut();
+                navigate("/auth");
+              }}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content Area - Full height with independent vertical scroll */}
+      <div className="flex min-w-0 flex-1 flex-col h-screen overflow-y-auto overflow-x-hidden">
+        {/* Sleek Content Topbar */}
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-slate-100 bg-white/85 px-4 lg:px-6 backdrop-blur-md">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen(true)}
+              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-2xs transition hover:bg-slate-50 lg:hidden"
+              aria-label="Open navigation menu"
+            >
+              <Menu className="h-4.5 w-4.5" />
+            </button>
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold capitalize text-slate-900 tracking-tight">
+                {activeTab === "configuration" ? "Settings" : activeTab}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Clean, dedicated Copy Link Button */}
+            {reviewUrl && (
+              <Button
+                size="sm"
+                onClick={copyLink}
+                className="h-9 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-[0.98] text-white text-xs font-semibold px-3.5 shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5"
+                title="Copy customer review link"
+              >
+                {copiedLink ? (
+                  <>
+                    <Check className="h-3.5 w-3.5 text-white" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5 text-teal-100" />
+                    <span>Copy Link</span>
+                  </>
+                )}
+              </Button>
+            )}
+
+            {/* Need Help Button - Clean Slate Secondary Button */}
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setHelpModalOpen(true)}
+              className="h-9 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 px-3.5 text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 active:scale-[0.98]"
+            >
+              <HelpCircle className="h-3.5 w-3.5 text-slate-500" />
+              <span>Need Help?</span>
+            </Button>
+
+            <div className="h-4.5 w-px bg-slate-200/90 mx-0.5 hidden sm:block" />
+
+            {/* Profile Avatar Quick Dropdown Menu */}
+            <div className="relative shrink-0" ref={profileMenuRef}>
+              <button
+                type="button"
+                onClick={() => setProfileMenuOpen((prev) => !prev)}
+                className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200/90 bg-slate-100/90 text-slate-800 font-bold text-xs shadow-2xs transition hover:bg-slate-200 hover:border-slate-300 active:scale-95"
+                aria-label="Open profile menu"
+                title={user?.email || "Profile"}
+              >
+                {profileFirstName
+                  ? profileFirstName.charAt(0).toUpperCase()
+                  : user?.email?.charAt(0).toUpperCase() || "U"}
+              </button>
+
+              {profileMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200/90 bg-white/95 p-3.5 shadow-xl backdrop-blur-md z-50">
+                  <div className="mb-2.5 rounded-xl border border-slate-200/80 bg-slate-50 p-3 text-xs font-medium text-slate-600">
+                    <p className="font-bold text-slate-900 truncate">
+                      {businessName || "My Business"}
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                      {user?.email}
+                    </p>
+                    <span className="inline-block mt-1.5 rounded-md bg-teal-50 px-2 py-0.5 text-[10px] font-bold uppercase text-teal-700 border border-teal-200/60">
+                      {selectedPlan} Plan
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-xl border-slate-300 bg-white px-3 text-slate-900 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition"
+                    onClick={() => {
+                      signOut();
+                      navigate("/auth");
+                    }}
+                  >
+                    <LogOut className="mr-1.5 h-4 w-4" />
+                    Logout
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Page Content */}
+        <main className="flex-1 p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl space-y-8">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-[3fr_1fr]">
             <section className="relative overflow-hidden rounded-3xl border-2 border-slate-400/80 bg-gradient-to-br from-white/90 to-slate-50/80 px-4 py-5 shadow-sm backdrop-blur-md sm:px-8 sm:py-6">
               <div className="relative grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start">
@@ -1345,21 +1579,55 @@ export default function Dashboard() {
               </div>
 
               <div className="grid grid-cols-1 gap-6">
-                <Card className="glass-card glass-card-hover">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Link className="h-5 w-5 text-blue-600" />
-                      Review Platform Links
-                    </CardTitle>
-                    <CardDescription>
-                      Manage your review destinations
-                    </CardDescription>
+                <Card
+                  onClick={() => {
+                    handleTabChange("configuration");
+                    setTimeout(() => {
+                      const el = document.getElementById("review-platforms-card");
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    }, 100);
+                  }}
+                  className="glass-card glass-card-hover cursor-pointer border border-slate-200/90 hover:border-teal-300 hover:shadow-md transition-all group"
+                  title="Click to manage review platforms in Settings"
+                >
+                  <CardHeader className="flex flex-row items-center justify-between pb-3">
+                    <div>
+                      <CardTitle className="flex items-center gap-2 text-lg text-slate-900 group-hover:text-teal-700 transition-colors">
+                        <Link className="h-5 w-5 text-teal-600" />
+                        Review Platform Links
+                      </CardTitle>
+                      <CardDescription className="text-xs text-slate-500">
+                        Manage your review destinations
+                      </CardDescription>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="rounded-xl border-slate-200 bg-white hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 text-xs font-semibold shadow-2xs gap-1.5 transition-all"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleTabChange("configuration");
+                        setTimeout(() => {
+                          const el = document.getElementById("review-platforms-card");
+                          el?.scrollIntoView({ behavior: "smooth" });
+                        }, 100);
+                      }}
+                    >
+                      <span>Configure in Settings</span>
+                      <ChevronRight className="h-3.5 w-3.5 text-slate-400 group-hover:text-teal-600 transition-colors" />
+                    </Button>
                   </CardHeader>
                   <CardContent>
                     {reviewLinks.length === 0 ? (
-                      <div className="py-6 text-center text-gray-500">
-                        <p className="text-sm">
+                      <div className="py-8 px-4 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50/60 transition group-hover:bg-teal-50/40 group-hover:border-teal-300">
+                        <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 text-teal-600 border border-teal-200 mb-2.5 group-hover:scale-105 transition-transform">
+                          <Plus className="h-5 w-5" />
+                        </div>
+                        <p className="text-sm font-bold text-slate-800 group-hover:text-teal-800 transition-colors">
                           No review links configured yet
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                          Click this card to connect Google, Trustpilot, or custom review destinations in Settings
                         </p>
                       </div>
                     ) : (
@@ -1367,23 +1635,27 @@ export default function Dashboard() {
                         {reviewLinks.map((link) => (
                           <div
                             key={link.id}
-                            className="flex items-center justify-between rounded-lg border border-slate-200/90 bg-white/75 p-3 transition hover:bg-white"
+                            className="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white/85 p-3.5 transition hover:bg-slate-50 hover:border-slate-300"
                           >
                             <div className="min-w-0 flex-1">
-                              <p className="text-sm font-semibold text-gray-900">
+                              <p className="text-sm font-bold text-slate-900">
                                 {link.platform_name}
                               </p>
-                              <p className="mt-1 truncate text-xs text-gray-500">
+                              <p className="mt-0.5 truncate text-xs text-slate-500 font-mono">
                                 {link.url}
                               </p>
                             </div>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => deleteReviewLink(link.id)}
-                              className="ml-2"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteReviewLink(link.id);
+                              }}
+                              className="ml-2 hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
+                              title="Delete link"
                             >
-                              <Trash2 className="h-4 w-4 text-red-500" />
+                              <Trash2 className="h-4 w-4" />
                             </Button>
                           </div>
                         ))}
@@ -1604,7 +1876,7 @@ export default function Dashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="glass-card glass-card-hover">
+              <Card id="review-platforms-card" className="glass-card glass-card-hover scroll-mt-20">
                 <CardHeader>
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -1933,6 +2205,7 @@ export default function Dashboard() {
           )}
         </div>
       </main>
+      </div>
 
       <AlertDialog
         open={feedbackDeleteDialogOpen}
@@ -1970,6 +2243,80 @@ export default function Dashboard() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Support / Need Help Modal */}
+      <Dialog open={helpModalOpen} onOpenChange={setHelpModalOpen}>
+        <DialogContent className="sm:max-w-lg rounded-3xl border border-slate-200 bg-white p-7 shadow-2xl">
+          <DialogHeader className="space-y-1.5 pr-6 text-left">
+            <div className="flex items-center gap-3.5">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 border border-amber-200/80 shadow-2xs">
+                <HelpCircle className="h-6 w-6" />
+              </span>
+              <div>
+                <DialogTitle className="text-xl font-bold tracking-tight text-slate-900">
+                  Need Help & Support?
+                </DialogTitle>
+                <DialogDescription className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                  Send a message directly to our admin team. We are here to help you.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          <form onSubmit={handleHelpSubmit} className="mt-4 space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs font-semibold text-slate-700">
+                Logged-in Email (Auto-filled)
+              </Label>
+              <Input
+                type="email"
+                value={user?.email || ""}
+                disabled
+                className="h-10 bg-slate-50 border-slate-200 text-slate-800 font-medium cursor-not-allowed text-sm rounded-xl"
+              />
+              <p className="text-[11px] text-slate-400">
+                Admin response will be sent to this email address.
+              </p>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label
+                htmlFor="help-message"
+                className="text-xs font-semibold text-slate-700"
+              >
+                Enter your support request or question
+              </Label>
+              <Textarea
+                id="help-message"
+                rows={4}
+                required
+                placeholder="Enter your support request, question, or anything you need help with. Our admin team will help you..."
+                value={helpMessage}
+                onChange={(e) => setHelpMessage(e.target.value)}
+                className="resize-none rounded-xl border border-slate-300 bg-white p-3.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20 shadow-2xs"
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setHelpModalOpen(false)}
+                className="h-10 rounded-xl border-slate-200 px-4 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmittingHelp || !helpMessage.trim()}
+                className="h-10 rounded-xl bg-teal-600 hover:bg-teal-700 text-white px-5 text-xs font-semibold shadow-xs transition disabled:opacity-50"
+              >
+                {isSubmittingHelp ? "Submitting..." : "Submit to Admin"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

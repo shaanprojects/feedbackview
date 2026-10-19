@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import {
   ArrowLeft,
   CheckCircle2,
-  Copy,
   ExternalLink,
   Globe,
   MessageSquare,
@@ -53,15 +52,6 @@ function BrandSvg({
   );
 }
 
-const quickTags = [
-  "Great service",
-  "Friendly staff",
-  "Fast & efficient",
-  "Top quality",
-  "Clean atmosphere",
-  "Highly recommended",
-];
-
 export default function ReviewPage() {
   const { businessId } = useParams<{ businessId: string }>();
   const [businessName, setBusinessName] = useState("");
@@ -77,6 +67,14 @@ export default function ReviewPage() {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const selectedPlatformName = useMemo(() => {
+    if (selectedReviewUrls.length === 0 || reviewLinks.length === 0) {
+      return reviewLinks[0]?.platform_name || "Google";
+    }
+    const found = reviewLinks.find((l) => l.url === selectedReviewUrls[0]);
+    return found?.platform_name || "Google";
+  }, [selectedReviewUrls, reviewLinks]);
 
   useEffect(() => {
     if (!businessId) return;
@@ -104,7 +102,10 @@ export default function ReviewPage() {
       const loadedLinks = links || [];
       setReviewLinks(loadedLinks);
       if (loadedLinks.length > 0) {
-        setSelectedReviewUrls([loadedLinks[0].url]);
+        const googleLink = loadedLinks.find((l) =>
+          l.platform_name.toLowerCase().includes("google"),
+        );
+        setSelectedReviewUrls([googleLink ? googleLink.url : loadedLinks[0].url]);
       }
       setLoading(false);
     };
@@ -125,18 +126,6 @@ export default function ReviewPage() {
     setStep("negative");
   };
 
-  const handleAddTag = (tag: string) => {
-    setMessage((prev) => {
-      if (!prev.trim()) {
-        return tag;
-      }
-      if (prev.includes(tag)) {
-        return prev;
-      }
-      return `${prev}, ${tag}`;
-    });
-  };
-
   const toggleReviewLinkSelection = (url: string, checked: boolean) => {
     setSelectedReviewUrls((prev) => {
       if (checked) {
@@ -144,23 +133,6 @@ export default function ReviewPage() {
       }
       return prev.filter((selectedUrl) => selectedUrl !== url);
     });
-  };
-
-  const copyReviewToClipboard = async (text: string) => {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return;
-    }
-
-    const fallbackTextArea = document.createElement("textarea");
-    fallbackTextArea.value = text;
-    fallbackTextArea.style.position = "fixed";
-    fallbackTextArea.style.opacity = "0";
-    document.body.appendChild(fallbackTextArea);
-    fallbackTextArea.focus();
-    fallbackTextArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(fallbackTextArea);
   };
 
   const getPlatformVisual = (platformName: string): PlatformVisual => {
@@ -222,7 +194,7 @@ export default function ReviewPage() {
     };
   };
 
-  const submitPositiveReview = async () => {
+  const submitPositiveReview = () => {
     if (reviewLinks.length === 0) {
       toast.error("No review platform configured for this business yet.");
       return;
@@ -232,16 +204,6 @@ export default function ReviewPage() {
       selectedReviewUrls.length > 0
         ? selectedReviewUrls
         : [reviewLinks[0].url];
-
-    const reviewText = message.trim();
-
-    if (reviewText) {
-      try {
-        await copyReviewToClipboard(reviewText);
-      } catch {
-        // clipboard fallback
-      }
-    }
 
     let openedCount = 0;
     targetUrls.forEach((url) => {
@@ -259,11 +221,7 @@ export default function ReviewPage() {
     }
 
     setSubmitted(true);
-    toast.success(
-      reviewText
-        ? "Review copied to clipboard! Paste it on the opened page."
-        : "Opening review platform. Thank you for your support!",
-    );
+    toast.success("Opening review platform. Thank you for your support!");
   };
 
   const submitFeedback = async () => {
@@ -337,7 +295,7 @@ export default function ReviewPage() {
     >
       <div className="w-full max-w-xl my-auto">
         {/* Main Card with Kit-style architecture */}
-        <div className="relative rounded-3xl border border-white/50 bg-white/95 p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] backdrop-blur-md">
+        <div className="relative rounded-3xl border-[2mm] border-transparent bg-clip-padding ring-[2mm] ring-white bg-white/95 p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] backdrop-blur-md">
           {/* SCREEN 1: INITIAL STAR RATING SCREEN */}
           {step === "rate" && !submitted && (
             <div className="text-center">
@@ -438,16 +396,11 @@ export default function ReviewPage() {
           {/* SCREEN 2: POSITIVE EXPERIENCE (RATING >= 4) */}
           {step === "positive" && !submitted && (
             <div className="space-y-6">
-              {/* Top navigation row */}
+              {/* Top Row: Status badge on left, Rating on right */}
               <div className="flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => setStep("rate")}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#666666] hover:text-[#111111] transition-colors"
-                >
-                  <ArrowLeft className="h-3.5 w-3.5" />
-                  <span>Change rating</span>
-                </button>
+                <div className="inline-flex items-center gap-1.5 rounded-md bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#059669]">
+                  ❤️ Thank You So Much
+                </div>
 
                 <div className="flex items-center gap-1 rounded-full bg-[#FFFBEB] px-3 py-1 text-xs font-bold text-[#B45309] border border-[#FDE68A]">
                   <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
@@ -456,114 +409,31 @@ export default function ReviewPage() {
               </div>
 
               {/* Editorial Header */}
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-1.5 rounded-md bg-[#ECFDF5] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#059669]">
-                  Excellent Experience
-                </div>
+              <div className="space-y-2.5">
                 <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
-                  We're so glad you enjoyed our service! 🎉
+                  Thank you! We're so glad you enjoyed our service 🎉
                 </h2>
-                <p className="text-sm text-[#666666] leading-relaxed">
-                  As a local business, recommendations from happy customers like
-                  you mean everything to us. Share your review on Google in 1
-                  tap.
+                <p className="text-sm text-[#555555] leading-relaxed">
+                  It was truly a pleasure serving you! As a small local business, every
+                  5-star review helps us keep doing what we love. Take 10 seconds to share
+                  your support on Google — it means the world to us! ✨
                 </p>
               </div>
 
-              {/* Kit-style Quick Tags with Purple Checkmark Circles */}
-              <div className="space-y-2.5">
-                <div className="text-xs font-bold uppercase tracking-wider text-[#777777]">
-                  Tap to add highlights:
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {quickTags.map((tag) => (
-                    <button
-                      key={tag}
-                      type="button"
-                      onClick={() => handleAddTag(tag)}
-                      className="inline-flex items-center gap-2 rounded-xl border border-[#ECEAE5] bg-[#FAF9F5] px-3.5 py-2 text-xs font-semibold text-[#222222] hover:border-[#7C3AED] hover:bg-[#F1EAFA]/60 hover:text-[#7C3AED] transition-all cursor-pointer active:scale-95"
-                    >
-                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#E9D5FF] text-[#7C3AED] text-[9px] font-black">
-                        ✓
-                      </span>
-                      <span>{tag}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Review Textarea */}
-              <div className="space-y-1.5">
-                <Textarea
-                  placeholder="Share a few words about what you loved most..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={3}
-                  className="rounded-2xl border-[#ECEAE5] bg-[#FAF9F5]/50 text-sm font-normal text-[#111111] placeholder:text-[#999999] focus:border-[#111111] focus:bg-white focus:ring-0 leading-relaxed"
-                />
-              </div>
-
-              {/* Platform Selector */}
-              {reviewLinks.length > 0 && (
-                <div className="space-y-2.5">
-                  <div className="text-xs font-bold uppercase tracking-wider text-[#777777]">
-                    Choose platform to publish:
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {reviewLinks.map((link) => {
-                      const visual = getPlatformVisual(link.platform_name);
-                      const isSelected = selectedReviewUrls.includes(link.url);
-
-                      return (
-                        <button
-                          type="button"
-                          key={`${link.platform_name}-${link.url}`}
-                          onClick={() =>
-                            toggleReviewLinkSelection(link.url, !isSelected)
-                          }
-                          className={`flex items-center justify-between rounded-2xl border p-3.5 text-sm font-semibold transition-all ${
-                            isSelected ? visual.activeClass : visual.idleClass
-                          }`}
-                          aria-pressed={isSelected}
-                        >
-                          <div className="flex items-center gap-2.5">
-                            <span
-                              className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${visual.iconContainerClass}`}
-                              aria-hidden="true"
-                            >
-                              {visual.icon}
-                            </span>
-                            <span className="font-bold text-[#111111]">
-                              {link.platform_name}
-                            </span>
-                          </div>
-
-                          {isSelected && (
-                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#111111] text-white text-[10px] font-bold">
-                              ✓
-                            </span>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Kit-style Bold Action Button */}
+              {/* Action Button */}
               <div className="space-y-2 pt-2">
                 <Button
-                  className="w-full h-12 rounded-2xl bg-[#111111] text-white hover:bg-black font-bold text-sm tracking-wide shadow-sm gap-2 transition-all"
+                  className="w-full h-12 rounded-2xl bg-[#111111] text-white hover:bg-black font-bold text-sm tracking-wide shadow-sm gap-2.5 transition-all cursor-pointer"
                   onClick={submitPositiveReview}
                   disabled={reviewLinks.length === 0}
                 >
-                  <Copy className="h-4 w-4" />
-                  <span>Copy Review & Open Platform</span>
-                  <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+                  <GoogleLogo className="h-4 w-4 shrink-0" />
+                  <span>Leave Review on Google</span>
+                  <ExternalLink className="h-4 w-4 opacity-70" />
                 </Button>
 
                 <p className="text-center text-[11px] text-[#888888]">
-                  Your review text will be copied to your clipboard automatically.
+                  Tap to open Google directly and share your 5-star experience.
                 </p>
               </div>
             </div>
@@ -621,8 +491,8 @@ export default function ReviewPage() {
                   <strong className="text-[#111111] font-bold">
                     100% Private & Direct:
                   </strong>{" "}
-                  This note is delivered directly to management and will never
-                  be published publicly.
+                  This note is delivered directly to management so we can
+                  rectify the issue and improve our service.
                 </p>
               </div>
 

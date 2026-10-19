@@ -1005,30 +1005,30 @@ export default function Dashboard() {
       {/* Main Content Area - Full height with independent vertical scroll */}
       <div className="flex min-w-0 flex-1 flex-col h-screen overflow-y-auto overflow-x-hidden">
         {/* Sleek Content Topbar */}
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b-2 border-black bg-white/85 px-4 lg:px-6 backdrop-blur-md">
-          <div className="flex items-center gap-3">
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b-2 border-black bg-white/85 px-3 sm:px-4 lg:px-6 backdrop-blur-md">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileNavOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-2xs transition hover:bg-slate-50 lg:hidden"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 shadow-2xs transition hover:bg-slate-50 lg:hidden"
               aria-label="Open navigation menu"
             >
               <Menu className="h-4.5 w-4.5" />
             </button>
-            <div className="flex items-center gap-2">
-              <span className="text-base font-bold capitalize text-slate-900 tracking-tight">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-sm sm:text-base font-bold capitalize text-slate-900 tracking-tight truncate">
                 {activeTab === "configuration" ? "Settings" : activeTab}
               </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2.5 sm:gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
             {/* Clean, dedicated Copy Link Button */}
             {reviewUrl && (
               <Button
                 size="sm"
                 onClick={copyLink}
-                className="h-9 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-[0.98] text-white text-xs font-semibold px-3.5 shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5"
+                className="h-9 rounded-xl bg-teal-600 hover:bg-teal-700 active:scale-[0.98] text-white text-xs font-semibold px-2.5 sm:px-3.5 shadow-2xs hover:shadow-xs transition-all flex items-center gap-1.5"
                 title="Copy customer review link"
               >
                 {copiedLink ? (
@@ -1039,21 +1039,22 @@ export default function Dashboard() {
                 ) : (
                   <>
                     <Copy className="h-3.5 w-3.5 text-teal-100" />
-                    <span>Copy Link</span>
+                    <span>Copy<span className="hidden sm:inline"> Link</span></span>
                   </>
                 )}
               </Button>
             )}
 
-            {/* Need Help Button - Clean Slate Secondary Button */}
+            {/* Need Help Button - Responsive icon on mobile, icon+text on desktop */}
             <Button
               size="sm"
               variant="outline"
               onClick={() => setHelpModalOpen(true)}
-              className="h-9 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 px-3.5 text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 active:scale-[0.98]"
+              className="h-9 rounded-xl border border-slate-200/90 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 px-2.5 sm:px-3 text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5 active:scale-[0.98]"
+              title="Need Help?"
             >
               <HelpCircle className="h-3.5 w-3.5 text-slate-500" />
-              <span>Need Help?</span>
+              <span className="hidden sm:inline">Need Help?</span>
             </Button>
 
             <div className="h-4.5 w-px bg-slate-200/90 mx-0.5 hidden sm:block" />

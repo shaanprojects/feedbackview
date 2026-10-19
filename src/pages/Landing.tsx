@@ -30,39 +30,44 @@ import {
   Store,
   Sparkles,
   CheckCircle2,
+  Rocket,
+  Building2,
+  Headphones,
+  HeartHandshake,
+  RefreshCw,
 } from "lucide-react";
 import dashboardBg from "@/assets/bg.png";
 
 const features = [
   {
-    icon: BarChart3,
-    title: "Real-Time Analytics",
-    desc: "Track reviews, ratings, and sentiment across all platforms in one dashboard.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Smart Response Assistant",
-    desc: "AI-powered suggestions to respond to reviews professionally and quickly.",
+    icon: Zap,
+    title: "Smart Review Routing",
+    desc: "Automatically route 4 & 5-star ratings to your public Google Reviews, while intercepting lower ratings privately.",
   },
   {
     icon: Shield,
-    title: "Reputation Protection",
-    desc: "Monitor brand mentions and get alerts for negative feedback instantly.",
+    title: "Private Complaint Interception",
+    desc: "Unhappy customers submit private feedback with their contact details so you can resolve complaints before they hit Google.",
   },
   {
-    icon: Zap,
-    title: "Auto-Review Collection",
-    desc: "Automated feedback collection via QR codes, emails, and links.",
+    icon: Smartphone,
+    title: "Instant QR & NFC Tap",
+    desc: "Customers simply scan with their phone camera on table stands, mirrors, or receipts. Zero app downloads needed.",
   },
   {
     icon: TrendingUp,
-    title: "SEO Boost",
-    desc: "Improve local search rankings with authentic reviews and ratings.",
+    title: "Google Maps SEO Surge",
+    desc: "A consistent stream of verified 5-star Google reviews helps your business outrank local competitors on Google Maps.",
   },
   {
-    icon: Plug,
-    title: "Multi-Platform Integration",
-    desc: "Connect Google, Yelp, Facebook, Trustpilot, and 50+ platforms.",
+    icon: BarChart3,
+    title: "Live Owner Dashboard",
+    desc: "Monitor incoming Google reviews, sentiment trends, and private customer feedback tickets in one clean dashboard.",
+  },
+  {
+    icon: MessageCircle,
+    title: "Fast Customer Recovery",
+    desc: "Direct contact info provided by unhappy customers allows managers to reach out and resolve issues within minutes.",
   },
 ];
 
@@ -120,58 +125,44 @@ const industries = [
 const testimonials = [
   {
     name: "Sarah Johnson",
-    role: "Restaurant Owner",
+    role: "Bistro & Cafe Owner",
     icon: Briefcase,
-    text: "TrueRep helped us increase Google rating from 3.2 to 4.8 in 3 months!",
+    text: "TrueRep helped us increase our Google rating from 3.4 to 4.8. Bad table experiences now reach me privately instead of ending up on Google!",
     rating: 5,
   },
   {
-    name: "Michael Chen",
-    role: "E-commerce Manager",
-    icon: Package,
-    text: "The automated review requests are a game-changer. We get 5x more reviews now.",
-    rating: 5,
-  },
-  {
-    name: "Emma Williams",
-    role: "Marketing Director",
-    icon: BarChart3,
-    text: "Best investment we made this year. The analytics alone are worth it.",
-    rating: 5,
-  },
-  {
-    name: "David Patel",
-    role: "Clinic Manager",
-    icon: Shield,
-    text: "Negative feedback alerts helped our team resolve issues before they escalated.",
-    rating: 5,
-  },
-  {
-    name: "Olivia Brown",
-    role: "Salon Founder",
+    name: "Elena Rostova",
+    role: "Salon & Spa Founder",
     icon: User,
-    text: "Customers love scanning our QR at checkout. Reviews started coming in daily.",
+    text: "Clients scan our QR stand right at the styling chair. We collected over 180 verified five-star Google reviews in just 3 months.",
     rating: 5,
   },
   {
-    name: "Noah Garcia",
-    role: "Hotel Operations Lead",
-    icon: Search,
-    text: "We used insights to improve weak areas and saw measurable growth in bookings.",
+    name: "Dr. David Patel",
+    role: "Dental Clinic Director",
+    icon: Shield,
+    text: "The private feedback route is a lifesaver. We resolve patient concerns immediately while happy patients boost our local search ranking.",
+    rating: 5,
+  },
+  {
+    name: "Marcus Vance",
+    role: "HVAC & Plumbing Lead",
+    icon: Wrench,
+    text: "Technicians hand out our TrueRep review card after every job. We now rank #1 on Google Maps for AC repair in our city.",
+    rating: 5,
+  },
+  {
+    name: "Carlos Mendez",
+    role: "Auto Detailing & Garage Owner",
+    icon: Check,
+    text: "Customers love the 10-second 1-tap review when picking up their car. Our review count tripled without awkward begging.",
     rating: 5,
   },
   {
     name: "Ava Thompson",
-    role: "Retail Owner",
-    icon: Check,
-    text: "Setup was easy and the team adopted it in one day. Highly recommended.",
-    rating: 5,
-  },
-  {
-    name: "James Wilson",
-    role: "Multi-Location Director",
-    icon: Plane,
-    text: "Managing reviews across branches is finally simple and consistent.",
+    role: "Boutique Retail Owner",
+    icon: Store,
+    text: "Simple setup, zero hassle for customers. Having our QR on checkout bags turned casual shoppers into raving Google fans.",
     rating: 5,
   },
 ];
@@ -218,106 +209,106 @@ const pricingPlans = [
   },
 ];
 
-const playbooks = [
+const businessOutcomes = [
   {
-    icon: Mail,
-    title: "First 50 Reviews Sprint",
-    desc: "A 14-day launch sequence to collect high-quality feedback from your happiest customers.",
-    points: [
-      "Day-by-day outreach schedule",
-      "Ready-to-send email and WhatsApp copy",
-      "Smart follow-up cadence after no response",
-    ],
+    icon: TrendingUp,
+    stat: "+35%",
+    statLabel: "More Local Walk-Ins",
+    title: "Google Maps #1 Ranking",
+    desc: "A steady flow of fresh 5-star reviews pushes your profile to the top 3 spots where 70% of local customers click.",
+    tag: "Top Search Visibility",
   },
   {
-    icon: Link2,
-    title: "Multi-Channel Capture Flow",
-    desc: "Distribute review requests through links, QR, and checkout touchpoints without overwhelming customers.",
-    points: [
-      "Best placement for review links",
-      "QR prompts for in-store teams",
-      "Channel mix based on business type",
-    ],
+    icon: Shield,
+    stat: "$3,000+",
+    statLabel: "Saved Per Bad Review",
+    title: "Negative Review Shield",
+    desc: "Intercepts 1 to 3-star ratings privately so you resolve customer complaints before they ever touch Google.",
+    tag: "Zero Public Damage",
   },
   {
     icon: MessageCircle,
-    title: "Negative Feedback Recovery",
-    desc: "Turn low ratings into resolved conversations with a clear triage and response framework.",
-    points: [
-      "1-hour response template for urgent issues",
-      "Escalation matrix for support teams",
-      "Resolution playbook before public follow-up",
-    ],
+    stat: "88%",
+    statLabel: "Customer Recovery",
+    title: "Turn Complaints into Loyalty",
+    desc: "Collects direct phone and email so management can follow up personally within minutes and win customers back.",
+    tag: "Direct Contact Recovery",
+  },
+];
+
+const userCommitments = [
+  {
+    icon: Headphones,
+    badge: "< 15-Min Response",
+    title: "Fast, Human Support for TrueRep Users",
+    desc: "No bots or runarounds. When business owners or managers need assistance with QR placement, staff scripts, or settings, our dedicated team is on standby.",
+    highlight: "Live chat, email & priority WhatsApp for owners",
+  },
+  {
+    icon: RefreshCw,
+    badge: "Always Included",
+    title: "Continuous Future Upgrades at Zero Cost",
+    desc: "Your subscription gets better every month. We ship faster review flows, smarter AI reply tools, and new Google Maps integrations without charging upgrade fees.",
+    highlight: "All future platform releases included automatically",
+  },
+  {
+    icon: HeartHandshake,
+    badge: "User-Driven Roadmap",
+    title: "Your Feedback Directly Shapes the Software",
+    desc: "We build around what business operators actually need. Over 80% of our product roadmap comes from ideas submitted by TrueRep business users.",
+    highlight: "Direct feature request portal in your dashboard",
+  },
+  {
+    icon: Shield,
+    badge: "99.9% Uptime",
+    title: "Rock-Solid QR Speed & Reliability",
+    desc: "When a customer scans your QR stand at checkout, it opens instantly. Our team maintains a high-speed global infrastructure so scans never lag or fail.",
+    highlight: "Sub-second mobile loading on all smartphones",
   },
 ];
 
 const faqs = [
   {
-    q: "How long does setup take?",
-    a: "Setup takes less than 5 minutes. Just connect your review platforms and start collecting feedback.",
+    q: "Is TrueRep suitable for a brand new business starting with zero reviews?",
+    a: "Yes! In fact, new ventures and grand openings benefit the most. Early customer trust is everything. TrueRep helps you collect your first 20–50 verified 5-star Google reviews in your opening weeks, while catching initial operational hiccups privately before anyone posts a public 1-star review.",
   },
   {
-    q: "How do customers submit feedback with QR code?",
-    a: "After signup, you get a unique QR code for your business. Customers scan it and submit feedback instantly from their phone.",
+    q: "How does TrueRep help established businesses with existing reviews?",
+    a: "For established businesses, TrueRep acts as an essential reputation shield. A single bad review can drop your average from 4.8 to 4.4 and hurt your Google Maps ranking. TrueRep intercepts disgruntled customers privately and maintains a steady daily stream of 5-star reviews to keep you ranked #1 in your city.",
   },
   {
-    q: "Can I collect both private feedback and public reviews?",
-    a: "Yes. You can collect private sentiment first, then direct happy customers to public review platforms to boost your rating.",
+    q: "How does TrueRep protect my business from negative reviews?",
+    a: "When a customer rates 1, 2, or 3 stars, TrueRep directs them to a private feedback form with optional contact details so you can fix the issue immediately. Only 4 and 5-star happy customers are guided to leave a public Google review.",
   },
   {
-    q: "How does TrueRep help with business growth?",
-    a: "Our insights show patterns in customer sentiment, service gaps, and strengths so you can improve operations and increase repeat business.",
+    q: "Do customers need to download an app?",
+    a: "No app needed. Customers simply scan the QR code with their smartphone camera or tap a review link, and your mobile-optimized TrueRep page opens in seconds.",
   },
   {
-    q: "Can I manage multiple business locations?",
-    a: "Absolutely. Professional and Enterprise plans support multiple locations with centralized reporting and tracking.",
+    q: "How does Google review submission work?",
+    a: "When a customer rates 4 or 5 stars, TrueRep opens your Google Maps review page with 1 tap, utilizing their existing Google login for a fast, authentic submission.",
   },
   {
-    q: "Is there a contract or hidden fees?",
-    a: "No contracts and no hidden fees. You can upgrade, downgrade, or cancel anytime.",
+    q: "Where should I place my TrueRep QR code?",
+    a: "Place your custom QR code on dining tables, check folders, styling mirrors, reception desks, service counters, digital invoices, or takeaway bags.",
   },
   {
-    q: "Do you offer onboarding support?",
-    a: "Yes. We provide setup guidance, best-practice templates, and support to help your team launch quickly.",
+    q: "Can I manage multiple business branches?",
+    a: "Yes. TrueRep supports multi-location businesses, allowing you to generate distinct QR codes and track reviews separately for each branch.",
   },
   {
-    q: "How do I choose the right plan?",
-    a: "Start with the plan that matches your current volume and team size. You can upgrade anytime as your business grows.",
+    q: "Can customers leave their contact details on private feedback?",
+    a: "Yes. For 1-3 star feedback, customers can optionally provide their name, phone number, and email so management can reach out and resolve issues personally.",
+  },
+  {
+    q: "Is there any contract or hidden fee?",
+    a: "No long-term contracts and no hidden fees. You can upgrade, downgrade, or cancel your subscription anytime.",
+  },
+  {
+    q: "How fast can I get set up?",
+    a: "Setup takes under 2 minutes. Enter your business name, paste your Google review link, and your custom QR code is ready to print.",
   },
 ];
-
-const feedbackPlanItems = [
-  {
-    title: "Follow-up with recent 3-star customers",
-    detail: "Send recovery message template and offer support callback.",
-    status: "done",
-  },
-  {
-    title: "Publish top testimonial to homepage",
-    detail: "Highlight highest sentiment feedback in hero social proof block.",
-    status: "done",
-  },
-  {
-    title: "Route low-rating alerts to support",
-    detail: "Trigger instant notification to support lead for ratings <= 2.",
-    status: "done",
-  },
-  {
-    title: "Launch weekend review reminder",
-    detail: "Schedule WhatsApp and email reminders for inactive customers.",
-    status: "done",
-  },
-  {
-    title: "Tag feedback by location cluster",
-    detail: "Separate reviews by branch to spot location-level issues quickly.",
-    status: "next",
-  },
-  {
-    title: "A/B test response templates",
-    detail: "Compare concise vs empathetic tone across negative feedback.",
-    status: "next",
-  },
-] as const;
 
 const featureFlowLaneStyles = [
   { bar: "bg-[#f5d9be]", dot: "bg-[#c3895d]" },
@@ -325,18 +316,42 @@ const featureFlowLaneStyles = [
   { bar: "bg-[#bbcff8]", dot: "bg-[#5f7bc8]" },
 ];
 
+const systemFlowItems = [
+  {
+    title: "5-Star Rating",
+    detail: "Customer routed straight to Google Maps review",
+    status: "google",
+  },
+  {
+    title: "2-Star Rating",
+    detail: "Intercepted & sent to private owner form",
+    status: "private",
+  },
+  {
+    title: "Table QR Scan",
+    detail: "Customer opened mobile review page in 2s",
+    status: "google",
+  },
+  {
+    title: "Customer Recovery",
+    detail: "Manager received phone & issue details",
+    status: "private",
+  },
+  {
+    title: "Google Maps Lift",
+    detail: "Business ranking boosted in local pack",
+    status: "google",
+  },
+  {
+    title: "Verified Feedback",
+    detail: "Live review sync active across locations",
+    status: "google",
+  },
+];
+
 export default function Landing() {
   const [isNavCompact, setIsNavCompact] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
-
-  const totalFeedbackTasks = feedbackPlanItems.length;
-  const completedFeedbackTasks = feedbackPlanItems.filter(
-    (item) => item.status === "done",
-  ).length;
-  const nextFeedbackTasks = totalFeedbackTasks - completedFeedbackTasks;
-  const feedbackExecutionProgress = Math.round(
-    (completedFeedbackTasks / totalFeedbackTasks) * 100,
-  );
 
   useEffect(() => {
     const handleScroll = () => {
@@ -450,10 +465,10 @@ export default function Landing() {
                 Who Needs This?
               </a>
               <a
-                href="#playbooks"
+                href="#impact"
                 className="text-base font-semibold text-slate-700 transition-colors hover:text-slate-950"
               >
-                Playbooks
+                Why It Pays
               </a>
             </div>
 
@@ -500,11 +515,11 @@ export default function Landing() {
                   Who Needs This?
                 </a>
                 <a
-                  href="#playbooks"
+                  href="#impact"
                   className="rounded-lg border border-slate-300/80 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-700"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
-                  Playbooks
+                  Why It Pays
                 </a>
               </div>
 
@@ -550,35 +565,37 @@ export default function Landing() {
             data-delay="60"
           >
             <div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-4 shadow-2xs">
+                <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+                For New Ventures, Startups & Established Brands
+              </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-4">
-                Master Your Business Reputation. Turn Customer{" "}
+                Get More 5-Star Google Reviews.{" "}
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
-                  Feedback into Growth.
+                  Filter Out Negative Ones.
                 </span>
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
-                The centralized platform to collect, analyze, and showcase
-                reviews across all platforms. Boost trust, improve local SEO,
-                and drive more sales.
+                Whether you're opening a brand new venture or scaling an existing business — TrueRep uses smart QR codes to route 4 & 5-star ratings directly to Google Maps, while intercepting customer complaints privately so you can fix issues before they harm your reputation.
               </p>
             </div>
 
             {/* CTA Buttons */}
             <div className="pt-4">
-              <Link to="/auth">
+              <Link to="/auth?mode=signup">
                 <Button
                   size="lg"
-                  className="bg-teal-600 hover:bg-teal-700 text-white px-8 text-base transition-transform duration-300 hover:-translate-y-0.5"
+                  className="bg-teal-600 hover:bg-teal-700 text-white px-8 text-base transition-transform duration-300 hover:-translate-y-0.5 shadow-md font-bold"
                 >
-                  Boost Your Growth
+                  Start Getting 5-Star Reviews
                 </Button>
               </Link>
             </div>
 
             {/* Trust Badge */}
             <div className="pt-4 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-3">
-                Trusted by 10,000+ businesses globally
+              <p className="text-sm font-medium text-gray-600 mb-3">
+                Built for new startups, growing ventures & multi-location businesses worldwide
               </p>
               <div className="flex items-center gap-4">
                 <Search className="w-5 h-5 text-teal-600" />
@@ -725,7 +742,7 @@ export default function Landing() {
                         Amazing experience, highly recommend
                       </p>
                       <p className="text-xs text-gray-600">
-                        Facebook • 5 hours ago
+                        Google Maps • 5 hours ago
                       </p>
                     </div>
                   </div>
@@ -748,6 +765,101 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Built For Every Business Stage */}
+      <section className="border-t border-slate-200/80 bg-white/70 py-12 sm:py-16 backdrop-blur-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10 sm:mb-12 reveal-on-scroll" data-reveal>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 shadow-2xs">
+              <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+              Tailored For Every Stage
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">
+              Built For New Starters, Growing Ventures & Established Brands
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+              Whether you need your very first review to gain customer trust, or you are defending hundreds of existing ratings across multiple locations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Stage 1 */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs hover:shadow-md hover:border-teal-400 transition-all flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 border border-teal-200 text-teal-700">
+                    <Rocket className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-teal-50 px-2.5 py-0.5 text-[11px] font-bold text-teal-800 border border-teal-200">
+                    Day 1 To Launch
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  New Business Starters
+                </h3>
+                <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  Zero reviews is the biggest obstacle to winning initial walk-ins. TrueRep accelerates your first 20–50 verified 5-star Google reviews within weeks of your grand opening, while catching early staff and service hiccups privately.
+                </p>
+              </div>
+              <div className="mt-5 pt-3 border-t border-slate-100 text-[11px] font-semibold text-teal-700 flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Instant Google Maps credibility</span>
+              </div>
+            </div>
+
+            {/* Stage 2 */}
+            <div className="rounded-2xl border-2 border-teal-500/80 bg-gradient-to-b from-teal-50/40 via-white to-white p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative">
+              <div className="absolute -top-3 right-6 rounded-full bg-teal-600 text-white px-3 py-0.5 text-[10px] font-bold tracking-wider uppercase shadow-xs">
+                Most Popular
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700">
+                    <TrendingUp className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 border border-emerald-200">
+                    Scaling Up
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Growing Local Ventures
+                </h3>
+                <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  Turn your existing daily foot traffic into a review engine. Consistently gain 5-star reviews to surpass local neighborhood competitors and rank in the coveted Google Maps "Top 3 Local Pack" where 70% of walk-ins originate.
+                </p>
+              </div>
+              <div className="mt-5 pt-3 border-t border-slate-100 text-[11px] font-semibold text-emerald-700 flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Outrank competitors in local search</span>
+              </div>
+            </div>
+
+            {/* Stage 3 */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs hover:shadow-md hover:border-teal-400 transition-all flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 border border-blue-200 text-blue-700">
+                    <Building2 className="h-5 w-5" />
+                  </div>
+                  <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-[11px] font-bold text-blue-800 border border-blue-200">
+                    Established & Multi-Branch
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Established Businesses
+                </h3>
+                <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                  Protecting an established 4.8-star rating is mission critical. TrueRep acts as an active reputation shield, intercepting disgruntled clients with direct owner contact while standardizing QR review collection across multiple branches.
+                </p>
+              </div>
+              <div className="mt-5 pt-3 border-t border-slate-100 text-[11px] font-semibold text-blue-700 flex items-center gap-1.5">
+                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Defend rating & manage branches</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section
         id="features"
@@ -756,14 +868,13 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20 reveal-on-scroll" data-reveal>
             <p className="text-teal-600 font-semibold text-sm uppercase mb-2 tracking-wide">
-              Powerful Features
+              Smart Reputation System
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Everything you need to dominate reviews
+              Everything you need to dominate Google reviews
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Comprehensive tools designed to help you collect, manage, and
-              leverage customer reviews.
+              Effortless QR scanning, automated Google routing, and private issue resolution—built for local business growth.
             </p>
           </div>
           <div
@@ -835,32 +946,38 @@ export default function Landing() {
                 <article className="absolute right-5 top-1/2 flex min-h-[360px] w-[36%] -translate-y-1/2 flex-col rounded-2xl border border-slate-200 bg-white/95 p-4 shadow-[0_18px_36px_rgba(15,23,42,0.12)] backdrop-blur-sm">
                   <div className="mb-3 flex items-center justify-between">
                     <h3 className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
-                      Project
+                      Live Routing
                     </h3>
-                    <span className="text-[11px] text-slate-400">03</span>
+                    <span className="text-[11px] text-teal-600 font-bold">ACTIVE</span>
                   </div>
 
                   <div className="mb-3 flex items-center gap-2">
                     <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-[11px] font-semibold text-white">
-                      FV
+                      TR
                     </span>
                     <div>
                       <p className="text-xs font-semibold text-slate-900">
-                        Feature Sprint
+                        Reputation Engine
                       </p>
                       <p className="text-[11px] text-slate-500">
-                        {totalFeedbackTasks} tasks planned
+                        Smart review filter active
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-1.5">
-                    {feedbackPlanItems.map((item, index) => (
+                    {systemFlowItems.map((item, index) => (
                       <div key={item.title} className="flex items-start gap-2">
-                        <span className="mt-[5px] inline-block h-1.5 w-1.5 rounded-full bg-slate-400" />
+                        <span
+                          className={`mt-[5px] inline-block h-1.5 w-1.5 rounded-full ${
+                            item.status === "google"
+                              ? "bg-emerald-500"
+                              : "bg-amber-500"
+                          }`}
+                        />
                         <p className="line-clamp-1 text-[11px] text-slate-600">
                           <span className="font-semibold text-slate-800">
-                            {index + 1}. {item.title}
+                            {item.title}:
                           </span>{" "}
                           {item.detail}
                         </p>
@@ -870,44 +987,42 @@ export default function Landing() {
 
                   <div className="mt-4 border-t border-slate-200 pt-3">
                     <div className="mb-2.5 flex items-center justify-between text-[11px] font-semibold text-slate-500">
-                      <span>Execution Progress</span>
-                      <span>{feedbackExecutionProgress}%</span>
+                      <span>Positive Reviews Channeled</span>
+                      <span className="font-bold text-teal-700">96%</span>
                     </div>
                     <div className="h-1.5 rounded-full bg-slate-200">
                       <div
                         className="h-1.5 rounded-full bg-gradient-to-r from-teal-500 to-blue-600"
-                        style={{ width: `${feedbackExecutionProgress}%` }}
+                        style={{ width: "96%" }}
                       />
                     </div>
 
                     <div className="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
                       <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5">
-                        <p className="font-bold text-slate-900">
-                          {totalFeedbackTasks}
-                        </p>
-                        <p className="text-slate-500">Tasks</p>
+                        <p className="font-bold text-emerald-600">+142</p>
+                        <p className="text-slate-500">5★ Google</p>
                       </div>
                       <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5">
-                        <p className="font-bold text-slate-900">
-                          {completedFeedbackTasks}
-                        </p>
-                        <p className="text-slate-500">Done</p>
+                        <p className="font-bold text-amber-600">18</p>
+                        <p className="text-slate-500">Private Solved</p>
                       </div>
                       <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5">
-                        <p className="font-bold text-slate-900">
-                          {nextFeedbackTasks}
-                        </p>
-                        <p className="text-slate-500">Next</p>
+                        <p className="font-bold text-teal-600">0</p>
+                        <p className="text-slate-500">Public Bad</p>
                       </div>
                     </div>
 
                     <div className="mt-3 flex gap-2">
-                      <button className="rounded-md bg-slate-900 px-2.5 py-1.5 text-[11px] font-semibold text-white">
-                        Review Plan
-                      </button>
-                      <button className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700">
-                        Assign Team
-                      </button>
+                      <Link to="/auth?mode=signup" className="flex-1">
+                        <button className="w-full rounded-md bg-slate-900 px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-black transition-colors">
+                          Activate System
+                        </button>
+                      </Link>
+                      <a href="#how-it-works" className="flex-1">
+                        <button className="w-full rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-700 hover:bg-slate-50 transition-colors">
+                          See Process
+                        </button>
+                      </a>
                     </div>
                   </div>
                 </article>
@@ -954,7 +1069,7 @@ export default function Landing() {
               Simple Process
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Get started in 4 easy steps
+              How TrueRep Works in 4 Steps
             </h2>
           </div>
 
@@ -965,27 +1080,27 @@ export default function Landing() {
               {[
                 {
                   num: "1",
-                  icon: User,
-                  title: "Create Account",
-                  desc: "Set up your business profile in minutes.",
+                  icon: Link2,
+                  title: "Place Your QR Code",
+                  desc: "Print your custom QR code on table stands, styling mirrors, or bills.",
                 },
                 {
                   num: "2",
-                  icon: Link2,
-                  title: "Get QR Code",
-                  desc: "Generate a custom QR code for customer reviews.",
+                  icon: Smartphone,
+                  title: "Customer Scans in Seconds",
+                  desc: "Customers scan with any phone camera—no app download required.",
                 },
                 {
                   num: "3",
-                  icon: Smartphone,
-                  title: "Scan For Review",
-                  desc: "Let customers scan and submit feedback instantly.",
+                  icon: Shield,
+                  title: "Smart Review Routing",
+                  desc: "4–5★ ratings go directly to Google. 1–3★ complaints go to your private inbox.",
                 },
                 {
                   num: "4",
                   icon: TrendingUp,
-                  title: "Grow With Feedback",
-                  desc: "Use insights to improve service and drive growth.",
+                  title: "Watch Your Rating Climb",
+                  desc: "Gain authentic 5-star Google reviews while solving customer issues privately.",
                 },
               ].map((step, i) => (
                 <div
@@ -1027,13 +1142,13 @@ export default function Landing() {
           <div className="text-center mb-10 sm:mb-12 reveal-on-scroll" data-reveal>
             <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 shadow-2xs">
               <Sparkles className="h-3.5 w-3.5 text-teal-600" />
-              Built For Every Local Business
+              For New Starters & Existing Ventures
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
               Who Needs TrueRep Most?
             </h2>
             <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
-              If customers find you on Google or choose you by your star rating, TrueRep protects and grows your reputation.
+              From day-one startups establishing instant credibility to existing businesses defending their hard-earned rating — TrueRep fits any business model.
             </p>
           </div>
 
@@ -1160,56 +1275,297 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Playbooks */}
+      {/* How TrueRep Pays For Itself in 30 Days */}
       <section
-        id="playbooks"
-        className="border-t border-gray-200/70 bg-gradient-to-b from-white to-teal-50/50 py-20"
+        id="impact"
+        className="border-t border-gray-200/70 bg-gradient-to-b from-slate-50/60 to-white py-14 sm:py-18"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-14 text-center reveal-on-scroll" data-reveal>
-            <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-teal-600">
-              Practical Playbooks
-            </p>
-            <h2 className="mb-4 text-4xl font-bold text-gray-900 md:text-5xl">
-              Copy, launch, and scale your review engine
+          <div className="mb-10 sm:mb-12 text-center reveal-on-scroll" data-reveal>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 shadow-2xs">
+              <Zap className="h-3.5 w-3.5 text-teal-600" />
+              Measurable Business ROI
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              How TrueRep Pays For Itself in 30 Days
             </h2>
-            <p className="mx-auto max-w-3xl text-lg text-gray-600">
-              Plug-and-play frameworks your team can execute this week to
-              increase review volume, protect brand trust, and improve local
-              rankings.
+            <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
+              Real financial impact you can measure in more local walk-ins, higher rankings, and protected revenue.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {playbooks.map((playbook, i) => (
-              <article
-                key={playbook.title}
-                className="rounded-2xl border border-teal-100 bg-white p-7 shadow-sm transition-all reveal-on-scroll hover:-translate-y-1 hover:shadow-xl"
-                data-reveal
-                data-delay={80 + i * 70}
-              >
-                <div className="mb-5 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-teal-100 to-blue-100">
-                  <playbook.icon className="h-6 w-6 text-teal-700" />
+          <div className="grid gap-5 md:grid-cols-3">
+            {businessOutcomes.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-2xs hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between"
+                  data-reveal
+                  data-delay={50 + i * 40}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 border border-teal-200 text-teal-700">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="text-right">
+                        <span className="text-2xl font-black text-slate-900 tracking-tight block">
+                          {item.stat}
+                        </span>
+                        <span className="text-[10px] font-semibold text-teal-700 block -mt-0.5">
+                          {item.statLabel}
+                        </span>
+                      </div>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span className="font-semibold text-slate-500">
+                      Outcome
+                    </span>
+                    <span className="font-bold text-teal-700 flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                      {item.tag}
+                    </span>
+                  </div>
                 </div>
-                <h3 className="mb-2 text-2xl font-bold text-gray-900">
-                  {playbook.title}
-                </h3>
-                <p className="mb-5 text-sm leading-relaxed text-gray-600">
-                  {playbook.desc}
+              );
+            })}
+          </div>
+
+          {/* Simple 1-Line Financial Math Bar */}
+          <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-900 p-5 sm:p-6 text-white shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-center sm:text-left">
+              <p className="text-xs sm:text-sm font-semibold text-slate-200">
+                💰 <strong className="text-white">The Math is Simple:</strong> Gaining just 1 extra customer a week or preventing 1 bad review pays for an entire year of TrueRep.
+              </p>
+            </div>
+            <Link to="/auth?mode=signup" className="shrink-0 w-full sm:w-auto">
+              <Button
+                size="sm"
+                className="w-full sm:w-auto rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 px-6 py-2 text-xs font-bold transition-all hover:scale-105"
+              >
+                Get Started Free
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Behind TrueRep: Team, Support & User Commitment */}
+      <section className="border-t border-gray-200/70 py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 sm:mb-12 text-center reveal-on-scroll" data-reveal>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 shadow-2xs">
+              <HeartHandshake className="h-3.5 w-3.5 text-teal-600" />
+              Our Team & User Commitment
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              We Stand Behind Every TrueRep User
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+              Software is only half the equation. Our dedicated team works directly with TrueRep users (business owners & managers) with fast human support, continuous zero-cost upgrades, and deep respect for your feedback.
+            </p>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {userCommitments.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.title}
+                  className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-2xs hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between"
+                  data-reveal
+                  data-delay={40 + i * 40}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-50 border border-teal-200 text-teal-700">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-bold text-slate-700 border border-slate-200">
+                        {item.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base font-bold text-gray-900 mb-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] font-semibold text-teal-700 flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                    <span>{item.highlight}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Differentiating Customer vs TrueRep User - Upgraded Aesthetic */}
+          <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 shadow-sm backdrop-blur-md">
+            {/* Header Banner */}
+            <div className="border-b border-slate-100 bg-gradient-to-r from-teal-50/80 via-slate-50/60 to-white px-6 py-5 sm:px-8 sm:py-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-0.5 text-[11px] font-bold text-teal-800 uppercase tracking-wider mb-1.5 shadow-2xs">
+                    <Sparkles className="h-3 w-3 text-teal-600" />
+                    A Core Distinction We Live By
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
+                    Frictionless for Customers. Dedicated Support for You.
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-gray-500 max-w-sm sm:text-right">
+                  Two distinct experiences engineered with purpose.
                 </p>
-                <ul className="space-y-3">
-                  {playbook.points.map((point) => (
-                    <li
-                      key={point}
-                      className="flex items-start gap-2 text-sm text-gray-700"
+              </div>
+            </div>
+
+            {/* Split Comparison Cards */}
+            <div className="p-6 sm:p-8">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Column 1: For Your In-Store Customers */}
+                <div className="rounded-2xl border border-slate-200 bg-slate-50/50 p-6 flex flex-col justify-between hover:border-slate-300 transition-colors">
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-slate-200 text-slate-700 shadow-2xs">
+                          <Smartphone className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                            Audience: In-Store Guest
+                          </span>
+                          <h4 className="text-base font-bold text-gray-900">
+                            For Your Customers (Reviewers)
+                          </h4>
+                        </div>
+                      </div>
+                      <span className="rounded-full bg-slate-200/70 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700">
+                        10-Sec Flow
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-gray-600 mb-5 leading-relaxed">
+                      Zero barriers between your guest leaving a rating and reaching the right destination.
+                    </p>
+
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Zero App Downloads:</strong> Works directly via camera scan on any phone in under 10 seconds.</span>
+                      </div>
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Safe Private Channel:</strong> 1–3 star ratings direct to private feedback, protecting public stars.</span>
+                      </div>
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Direct Google Maps Tap:</strong> 4–5 star ratings open your Google listing with their account logged in.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-200/70 text-[11px] text-slate-500 font-medium">
+                    🎯 Result: Higher review volume without awkward begging at checkout.
+                  </div>
+                </div>
+
+                {/* Column 2: For You (The TrueRep Business User) */}
+                <div className="rounded-2xl border-2 border-teal-300 bg-gradient-to-b from-teal-50/50 via-white to-white p-6 flex flex-col justify-between shadow-2xs relative">
+                  <div className="absolute top-4 right-4">
+                    <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-[10px] font-bold text-teal-800 border border-teal-200">
+                      VIP TrueRep User
+                    </span>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-600 text-white shadow-2xs">
+                        <HeartHandshake className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-teal-700 block">
+                          Audience: Business Subscriber
+                        </span>
+                        <h4 className="text-base font-bold text-gray-900">
+                          For You (TrueRep Business User)
+                        </h4>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-gray-600 mb-5 leading-relaxed">
+                      We treat you as a long-term partner with dedicated backing, human support, and constant software evolution.
+                    </p>
+
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Fast Human Support:</strong> Direct WhatsApp & live chat assistance with response times under 15 minutes.</span>
+                      </div>
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Free Lifetime Upgrades:</strong> AI reply features, new Google integrations & speed upgrades included free.</span>
+                      </div>
+                      <div className="flex items-start gap-2.5 text-xs text-gray-700">
+                        <div className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700">
+                          <Check className="h-2.5 w-2.5" />
+                        </div>
+                        <span><strong>Your Feedback Shapes Features:</strong> Directly vote on and request new capabilities built for your industry.</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-teal-100 text-[11px] text-teal-800 font-semibold">
+                    🤝 Promise: We treat your business like our own—you are never just an account number.
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Integrated Action Bar */}
+              <div className="mt-6 rounded-2xl border border-slate-200/90 bg-slate-900 p-5 sm:p-6 text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="text-center sm:text-left">
+                  <p className="text-xs sm:text-sm font-bold text-white">
+                    Ready to partner with a software team that actually listens?
+                  </p>
+                  <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5">
+                    Start protecting and growing your Google star rating in less than 2 minutes.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
+                  <Link to="/auth?mode=signup" className="w-full sm:w-auto">
+                    <Button
+                      size="sm"
+                      className="w-full sm:w-auto rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 px-6 py-2.5 text-xs font-bold transition-all hover:scale-105 shadow-sm"
                     >
-                      <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-teal-600" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
+                      Partner With TrueRep
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1248,19 +1604,18 @@ export default function Landing() {
       <section className="py-14 sm:py-20 reveal-on-scroll" data-reveal>
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl md:text-5xl leading-tight font-bold text-gray-900 mb-4 sm:mb-6">
-            Ready to master your reputation?
+            Ready to dominate Google reviews in your city?
           </h2>
           <p className="text-base sm:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto">
-            Join thousands of successful businesses using TrueRep to grow
-            their online reputation.
+            Start collecting authentic 5-star ratings and catching private complaints today. Set up in under 2 minutes.
           </p>
           <div className="flex justify-center">
-            <Link to="/auth" className="w-full sm:w-auto">
+            <Link to="/auth?mode=signup" className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="w-full sm:w-auto bg-teal-600 text-white hover:bg-teal-700 px-8 text-base font-semibold"
+                className="w-full sm:w-auto bg-teal-600 text-white hover:bg-teal-700 px-9 py-3 text-base font-bold shadow-md transition-all hover:scale-105"
               >
-                Get Started
+                Get Started With TrueRep
               </Button>
             </Link>
           </div>

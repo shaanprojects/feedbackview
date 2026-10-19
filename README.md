@@ -1,6 +1,6 @@
-# FeedbackView
+# TrueRep
 
-FeedbackView is a customer reputation and feedback workflow app.
+TrueRep is a customer reputation and feedback workflow app.
 It helps businesses collect private feedback, route happy customers to public review platforms, and capture critical feedback internally before it becomes a negative public review.
 
 ## Key Features
@@ -143,7 +143,7 @@ App runs at `http://localhost:8080` by default.
 
 ```bash
 git add .
-git commit -m "Prepare FeedbackView for deployment"
+git commit -m "Prepare TrueRep for deployment"
 git push
 ```
 
@@ -163,7 +163,7 @@ npm run build
 
 ## Status
 
-FeedbackView is actively evolving. Core flow is production-ready, with opportunities to expand analytics depth, role management, and platform integrations.
+TrueRep is actively evolving. Core flow is production-ready, with opportunities to expand analytics depth, role management, and platform integrations.
 
 ---
 *Last updated for deployment test.*

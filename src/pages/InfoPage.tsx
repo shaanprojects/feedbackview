@@ -49,7 +49,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
   "success-stories": {
     title: "Success Stories",
     subtitle:
-      "See how businesses improved ratings, trust, and customer retention using FeedbackView.",
+      "See how businesses improved ratings, trust, and customer retention using TrueRep.",
     points: [
       "Restaurants improving ratings from below 4.0 to above 4.8.",
       "Retail teams collecting 5x more feedback with QR-driven prompts.",
@@ -60,7 +60,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
   about: {
     title: "About",
     subtitle:
-      "FeedbackView helps businesses build trust by turning customer voice into actionable insight.",
+      "TrueRep helps businesses build trust by turning customer voice into actionable insight.",
     points: [
       "Mission: make reputation growth simple for every business.",
       "Vision: every customer interaction should improve service quality.",
@@ -84,8 +84,8 @@ const pageContentMap: Record<PageKey, PageContent> = {
     subtitle:
       "Need help or a demo? Reach out and our team will guide your setup.",
     points: [
-      "Support email: support@feedbackview.com",
-      "Sales email: sales@feedbackview.com",
+      "Support email: support@truerep.com",
+      "Sales email: sales@truerep.com",
       "Response time: within 24 hours on business days.",
       "Onboarding support available for all paid plans.",
     ],
@@ -93,7 +93,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
   privacy: {
     title: "Privacy",
     subtitle:
-      "Your data protection and responsible usage are core to how FeedbackView operates.",
+      "Your data protection and responsible usage are core to how TrueRep operates.",
     points: [
       "Data is encrypted in transit and at rest.",
       "Access controls restrict account and workspace permissions.",

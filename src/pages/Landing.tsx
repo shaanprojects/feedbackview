@@ -63,7 +63,7 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "Restaurant Owner",
     icon: Briefcase,
-    text: "FeedbackView helped us increase Google rating from 3.2 to 4.8 in 3 months!",
+    text: "TrueRep helped us increase Google rating from 3.2 to 4.8 in 3 months!",
     rating: 5,
   },
   {
@@ -206,7 +206,7 @@ const faqs = [
     a: "Yes. You can collect private sentiment first, then direct happy customers to public review platforms to boost your rating.",
   },
   {
-    q: "How does FeedbackView help with business growth?",
+    q: "How does TrueRep help with business growth?",
     a: "Our insights show patterns in customer sentiment, service gaps, and strengths so you can improve operations and increase repeat business.",
   },
   {
@@ -353,7 +353,7 @@ export default function Landing() {
             <div className="flex items-center gap-2.5 shrink-0">
               <BookmarkIcon className="h-6 w-6 text-slate-900" />
               <span className="text-xl font-bold text-slate-900 sm:text-2xl">
-                FeedbackView
+                TrueRep
               </span>
             </div>
 
@@ -1173,7 +1173,7 @@ export default function Landing() {
             Ready to master your reputation?
           </h2>
           <p className="text-base sm:text-xl text-gray-600 mb-8 sm:mb-10 max-w-2xl mx-auto">
-            Join thousands of successful businesses using FeedbackView to grow
+            Join thousands of successful businesses using TrueRep to grow
             their online reputation.
           </p>
           <div className="flex justify-center">
@@ -1198,7 +1198,7 @@ export default function Landing() {
                 <div className="mb-4 flex items-center gap-3">
                   <BookmarkIcon className="h-7 w-7 text-slate-900" />
                   <span className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                    FeedbackView
+                    TrueRep
                   </span>
                 </div>
                 <p className="max-w-sm text-xl leading-relaxed text-slate-700 sm:text-2xl">
@@ -1291,7 +1291,7 @@ export default function Landing() {
 
             <div className="flex flex-col gap-3 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between">
               <p>
-                © {new Date().getFullYear()} FeedbackView. All rights reserved.
+                © {new Date().getFullYear()} TrueRep. All rights reserved.
               </p>
               <p>Built for modern businesses.</p>
             </div>

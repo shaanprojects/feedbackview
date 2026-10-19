@@ -570,7 +570,7 @@ export default function ReviewPage() {
         <div className="mt-8 text-center text-xs text-white/90 drop-shadow-sm">
           <div className="flex items-center justify-center gap-1.5 font-medium">
             <span className="text-white/80">Powered by</span>
-            <span className="font-bold text-white">TrueRep</span>
+            <span className="font-bold text-white">True Repp</span>
           </div>
           <p className="text-[11px] text-white/70 mt-0.5">
             Helping local businesses deliver 5-star service

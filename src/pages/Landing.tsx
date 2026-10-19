@@ -127,7 +127,7 @@ const testimonials = [
     name: "Sarah Johnson",
     role: "Bistro & Cafe Owner",
     icon: Briefcase,
-    text: "TrueRep helped us increase our Google rating from 3.4 to 4.8. Bad table experiences now reach me privately instead of ending up on Google!",
+    text: "True Repp helped us increase our Google rating from 3.4 to 4.8. Bad table experiences now reach me privately instead of ending up on Google!",
     rating: 5,
   },
   {
@@ -148,7 +148,7 @@ const testimonials = [
     name: "Marcus Vance",
     role: "HVAC & Plumbing Lead",
     icon: Wrench,
-    text: "Technicians hand out our TrueRep review card after every job. We now rank #1 on Google Maps for AC repair in our city.",
+    text: "Technicians hand out our True Repp review card after every job. We now rank #1 on Google Maps for AC repair in our city.",
     rating: 5,
   },
   {
@@ -240,7 +240,7 @@ const userCommitments = [
   {
     icon: Headphones,
     badge: "< 15-Min Response",
-    title: "Fast, Human Support for TrueRep Users",
+    title: "Fast, Human Support for True Repp Users",
     desc: "No bots or runarounds. When business owners or managers need assistance with QR placement, staff scripts, or settings, our dedicated team is on standby.",
     highlight: "Live chat, email & priority WhatsApp for owners",
   },
@@ -255,7 +255,7 @@ const userCommitments = [
     icon: HeartHandshake,
     badge: "User-Driven Roadmap",
     title: "Your Feedback Directly Shapes the Software",
-    desc: "We build around what business operators actually need. Over 80% of our product roadmap comes from ideas submitted by TrueRep business users.",
+    desc: "We build around what business operators actually need. Over 80% of our product roadmap comes from ideas submitted by True Repp business users.",
     highlight: "Direct feature request portal in your dashboard",
   },
   {
@@ -269,32 +269,32 @@ const userCommitments = [
 
 const faqs = [
   {
-    q: "Is TrueRep suitable for a brand new business starting with zero reviews?",
-    a: "Yes! In fact, new ventures and grand openings benefit the most. Early customer trust is everything. TrueRep helps you collect your first 20–50 verified 5-star Google reviews in your opening weeks, while catching initial operational hiccups privately before anyone posts a public 1-star review.",
+    q: "Is True Repp suitable for a brand new business starting with zero reviews?",
+    a: "Yes! In fact, new ventures and grand openings benefit the most. Early customer trust is everything. True Repp helps you collect your first 20–50 verified 5-star Google reviews in your opening weeks, while catching initial operational hiccups privately before anyone posts a public 1-star review.",
   },
   {
-    q: "How does TrueRep help established businesses with existing reviews?",
-    a: "For established businesses, TrueRep acts as an essential reputation shield. A single bad review can drop your average from 4.8 to 4.4 and hurt your Google Maps ranking. TrueRep intercepts disgruntled customers privately and maintains a steady daily stream of 5-star reviews to keep you ranked #1 in your city.",
+    q: "How does True Repp help established businesses with existing reviews?",
+    a: "For established businesses, True Repp acts as an essential reputation shield. A single bad review can drop your average from 4.8 to 4.4 and hurt your Google Maps ranking. True Repp intercepts disgruntled customers privately and maintains a steady daily stream of 5-star reviews to keep you ranked #1 in your city.",
   },
   {
-    q: "How does TrueRep protect my business from negative reviews?",
-    a: "When a customer rates 1, 2, or 3 stars, TrueRep directs them to a private feedback form with optional contact details so you can fix the issue immediately. Only 4 and 5-star happy customers are guided to leave a public Google review.",
+    q: "How does True Repp protect my business from negative reviews?",
+    a: "When a customer rates 1, 2, or 3 stars, True Repp directs them to a private feedback form with optional contact details so you can fix the issue immediately. Only 4 and 5-star happy customers are guided to leave a public Google review.",
   },
   {
     q: "Do customers need to download an app?",
-    a: "No app needed. Customers simply scan the QR code with their smartphone camera or tap a review link, and your mobile-optimized TrueRep page opens in seconds.",
+    a: "No app needed. Customers simply scan the QR code with their smartphone camera or tap a review link, and your mobile-optimized True Repp page opens in seconds.",
   },
   {
     q: "How does Google review submission work?",
-    a: "When a customer rates 4 or 5 stars, TrueRep opens your Google Maps review page with 1 tap, utilizing their existing Google login for a fast, authentic submission.",
+    a: "When a customer rates 4 or 5 stars, True Repp opens your Google Maps review page with 1 tap, utilizing their existing Google login for a fast, authentic submission.",
   },
   {
-    q: "Where should I place my TrueRep QR code?",
+    q: "Where should I place my True Repp QR code?",
     a: "Place your custom QR code on dining tables, check folders, styling mirrors, reception desks, service counters, digital invoices, or takeaway bags.",
   },
   {
     q: "Can I manage multiple business branches?",
-    a: "Yes. TrueRep supports multi-location businesses, allowing you to generate distinct QR codes and track reviews separately for each branch.",
+    a: "Yes. True Repp supports multi-location businesses, allowing you to generate distinct QR codes and track reviews separately for each branch.",
   },
   {
     q: "Can customers leave their contact details on private feedback?",
@@ -427,7 +427,7 @@ export default function Landing() {
             <div className="flex items-center gap-2.5 shrink-0">
               <BookmarkIcon className="h-6 w-6 text-slate-900" />
               <span className="text-xl font-bold text-slate-900 sm:text-2xl">
-                TrueRep
+                True Repp
               </span>
             </div>
 
@@ -468,7 +468,7 @@ export default function Landing() {
                 href="#impact"
                 className="text-base font-semibold text-slate-700 transition-colors hover:text-slate-950"
               >
-                Why TrueRep
+                Why True Repp
               </a>
             </div>
 
@@ -519,7 +519,7 @@ export default function Landing() {
                   className="rounded-lg border border-slate-300/80 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-700"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
-                  Why TrueRep
+                  Why True Repp
                 </a>
               </div>
 
@@ -576,7 +576,7 @@ export default function Landing() {
                 </span>
               </h1>
               <p className="text-lg text-gray-600 leading-relaxed">
-                Whether you're opening a brand new venture or scaling an existing business — TrueRep uses smart QR codes to route 4 & 5-star ratings directly to Google Maps, while intercepting customer complaints privately so you can fix issues before they harm your reputation.
+                Whether you're opening a brand new venture or scaling an existing business — True Repp uses smart QR codes to route 4 & 5-star ratings directly to Google Maps, while intercepting customer complaints privately so you can fix issues before they harm your reputation.
               </p>
             </div>
 
@@ -797,7 +797,7 @@ export default function Landing() {
                   New Business Starters
                 </h3>
                 <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
-                  Zero reviews is the biggest obstacle to winning initial walk-ins. TrueRep accelerates your first 20–50 verified 5-star Google reviews within weeks of your grand opening, while catching early staff and service hiccups privately.
+                  Zero reviews is the biggest obstacle to winning initial walk-ins. True Repp accelerates your first 20–50 verified 5-star Google reviews within weeks of your grand opening, while catching early staff and service hiccups privately.
                 </p>
               </div>
               <div className="mt-5 pt-3 border-t border-slate-100 text-[11px] font-semibold text-teal-700 flex items-center gap-1.5">
@@ -848,7 +848,7 @@ export default function Landing() {
                   Established Businesses
                 </h3>
                 <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
-                  Protecting an established 4.8-star rating is mission critical. TrueRep acts as an active reputation shield, intercepting disgruntled clients with direct owner contact while standardizing QR review collection across multiple branches.
+                  Protecting an established 4.8-star rating is mission critical. True Repp acts as an active reputation shield, intercepting disgruntled clients with direct owner contact while standardizing QR review collection across multiple branches.
                 </p>
               </div>
               <div className="mt-5 pt-3 border-t border-slate-100 text-[11px] font-semibold text-blue-700 flex items-center gap-1.5">
@@ -1069,7 +1069,7 @@ export default function Landing() {
               Simple Process
             </p>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              How TrueRep Works in 4 Steps
+              How True Repp Works in 4 Steps
             </h2>
           </div>
 
@@ -1133,7 +1133,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Who Needs TrueRep Most? (Industries & Use Cases) */}
+      {/* Who Needs True Repp Most? (Industries & Use Cases) */}
       <section
         id="industries"
         className="border-t border-gray-200/70 bg-gradient-to-b from-slate-50/70 to-white py-14 sm:py-18"
@@ -1145,10 +1145,10 @@ export default function Landing() {
               For New Starters & Existing Ventures
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              Who Needs TrueRep Most?
+              Who Needs True Repp Most?
             </h2>
             <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
-              From day-one startups establishing instant credibility to existing businesses defending their hard-earned rating — TrueRep fits any business model.
+              From day-one startups establishing instant credibility to existing businesses defending their hard-earned rating — True Repp fits any business model.
             </p>
           </div>
 
@@ -1275,7 +1275,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How TrueRep Pays For Itself in 30 Days */}
+      {/* How True Repp Pays For Itself in 30 Days */}
       <section
         id="impact"
         className="border-t border-gray-200/70 bg-gradient-to-b from-slate-50/60 to-white py-14 sm:py-18"
@@ -1287,7 +1287,7 @@ export default function Landing() {
               Measurable Business ROI
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              How TrueRep Pays For Itself in 30 Days
+              How True Repp Pays For Itself in 30 Days
             </h2>
             <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
               Real financial impact you can measure in more local walk-ins, higher rankings, and protected revenue.
@@ -1345,7 +1345,7 @@ export default function Landing() {
           <div className="mt-8 rounded-2xl border border-slate-200 bg-slate-900 p-5 sm:p-6 text-white shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left">
               <p className="text-xs sm:text-sm font-semibold text-slate-200">
-                💰 <strong className="text-white">The Math is Simple:</strong> Gaining just 1 extra customer a week or preventing 1 bad review pays for an entire year of TrueRep.
+                💰 <strong className="text-white">The Math is Simple:</strong> Gaining just 1 extra customer a week or preventing 1 bad review pays for an entire year of True Repp.
               </p>
             </div>
             <Link to="/auth?mode=signup" className="shrink-0 w-full sm:w-auto">
@@ -1360,7 +1360,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Behind TrueRep: Team, Support & User Commitment */}
+      {/* Behind True Repp: Team, Support & User Commitment */}
       <section className="border-t border-gray-200/70 py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 sm:mb-12 text-center reveal-on-scroll" data-reveal>
@@ -1369,10 +1369,10 @@ export default function Landing() {
               Our Team & User Commitment
             </div>
             <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
-              We Stand Behind Every TrueRep User
+              We Stand Behind Every True Repp User
             </h2>
             <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
-              Software is only half the equation. Our dedicated team works directly with TrueRep users (business owners & managers) with fast human support, continuous zero-cost upgrades, and deep respect for your feedback.
+              Software is only half the equation. Our dedicated team works directly with True Repp users (business owners & managers) with fast human support, continuous zero-cost upgrades, and deep respect for your feedback.
             </p>
           </div>
 
@@ -1413,7 +1413,7 @@ export default function Landing() {
             })}
           </div>
 
-          {/* Differentiating Customer vs TrueRep User - Upgraded Aesthetic */}
+          {/* Differentiating Customer vs True Repp User - Upgraded Aesthetic */}
           <div className="mt-10 overflow-hidden rounded-3xl border border-slate-200/90 bg-white/95 shadow-sm backdrop-blur-md">
             {/* Header Banner */}
             <div className="border-b border-slate-100 bg-gradient-to-r from-teal-50/80 via-slate-50/60 to-white px-6 py-5 sm:px-8 sm:py-6">
@@ -1489,11 +1489,11 @@ export default function Landing() {
                   </div>
                 </div>
 
-                {/* Column 2: For You (The TrueRep Business User) */}
+                {/* Column 2: For You (The True Repp Business User) */}
                 <div className="rounded-2xl border-2 border-teal-300 bg-gradient-to-b from-teal-50/50 via-white to-white p-6 flex flex-col justify-between shadow-2xs relative">
                   <div className="absolute top-4 right-4">
                     <span className="rounded-full bg-teal-100 px-2.5 py-0.5 text-[10px] font-bold text-teal-800 border border-teal-200">
-                      VIP TrueRep User
+                      VIP True Repp User
                     </span>
                   </div>
 
@@ -1507,7 +1507,7 @@ export default function Landing() {
                           Audience: Business Subscriber
                         </span>
                         <h4 className="text-base font-bold text-gray-900">
-                          For You (TrueRep Business User)
+                          For You (True Repp Business User)
                         </h4>
                       </div>
                     </div>
@@ -1560,7 +1560,7 @@ export default function Landing() {
                       size="sm"
                       className="w-full sm:w-auto rounded-xl bg-teal-500 text-slate-950 hover:bg-teal-400 px-6 py-2.5 text-xs font-bold transition-all hover:scale-105 shadow-sm"
                     >
-                      Partner With TrueRep
+                      Partner With True Repp
                     </Button>
                   </Link>
                 </div>
@@ -1615,7 +1615,7 @@ export default function Landing() {
                 size="lg"
                 className="w-full sm:w-auto bg-teal-600 text-white hover:bg-teal-700 px-9 py-3 text-base font-bold shadow-md transition-all hover:scale-105"
               >
-                Get Started With TrueRep
+                Get Started With True Repp
               </Button>
             </Link>
           </div>
@@ -1631,7 +1631,7 @@ export default function Landing() {
                 <div className="mb-4 flex items-center gap-3">
                   <BookmarkIcon className="h-7 w-7 text-slate-900" />
                   <span className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-                    TrueRep
+                    True Repp
                   </span>
                 </div>
                 <p className="max-w-sm text-xl leading-relaxed text-slate-700 sm:text-2xl">
@@ -1724,7 +1724,7 @@ export default function Landing() {
 
             <div className="flex flex-col gap-3 text-sm text-slate-700 sm:flex-row sm:items-center sm:justify-between">
               <p>
-                © {new Date().getFullYear()} TrueRep. All rights reserved.
+                © {new Date().getFullYear()} True Repp. All rights reserved.
               </p>
               <p>Built for modern businesses.</p>
             </div>

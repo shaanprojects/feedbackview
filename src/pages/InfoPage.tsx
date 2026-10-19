@@ -47,7 +47,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
     ],
   },
   "success-stories": {
-    title: "Who Needs TrueRep Most?",
+    title: "Who Needs True Repp Most?",
     subtitle:
       "Built for local businesses where customer trust, Google Maps ranking, and ratings make or break revenue.",
     points: [
@@ -61,7 +61,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
   about: {
     title: "About",
     subtitle:
-      "TrueRep helps businesses build trust by turning customer voice into actionable insight.",
+      "True Repp helps businesses build trust by turning customer voice into actionable insight.",
     points: [
       "Mission: make reputation growth simple for every business.",
       "Vision: every customer interaction should improve service quality.",
@@ -85,8 +85,8 @@ const pageContentMap: Record<PageKey, PageContent> = {
     subtitle:
       "Need help or a demo? Reach out and our team will guide your setup.",
     points: [
-      "Support email: support@truerep.com",
-      "Sales email: sales@truerep.com",
+      "Support email: support@True Repp.com",
+      "Sales email: sales@True Repp.com",
       "Response time: within 24 hours on business days.",
       "Onboarding support available for all paid plans.",
     ],
@@ -94,7 +94,7 @@ const pageContentMap: Record<PageKey, PageContent> = {
   privacy: {
     title: "Privacy",
     subtitle:
-      "Your data protection and responsible usage are core to how TrueRep operates.",
+      "Your data protection and responsible usage are core to how True Repp operates.",
     points: [
       "Data is encrypted in transit and at rest.",
       "Access controls restrict account and workspace permissions.",

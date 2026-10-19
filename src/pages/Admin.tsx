@@ -281,7 +281,7 @@ export default function Admin() {
             <div className="flex items-center gap-3">
               <Shield className="h-7 w-7 text-slate-900" />
               <p className="text-base font-bold tracking-tight text-slate-900 sm:text-2xl">
-                TrueRep Admin
+                True Repp Admin
               </p>
             </div>
 
@@ -349,7 +349,7 @@ export default function Admin() {
         <div className="mx-auto max-w-7xl space-y-7">
           <section className="relative overflow-hidden rounded-3xl border-2 border-slate-400/80 bg-gradient-to-br from-white/90 to-slate-50/80 px-4 py-5 shadow-sm backdrop-blur-md sm:px-8 sm:py-6">
             <p className="text-xs font-semibold uppercase tracking-[0.34em] text-blue-700">
-              TrueRep
+              True Repp
             </p>
             <h1 className="mt-2 text-3xl font-bold leading-tight text-slate-950 sm:text-5xl">
               {pageTitle}

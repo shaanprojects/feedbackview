@@ -304,10 +304,10 @@ export default function Dashboard() {
         ? 10
         : 3;
   const monthlyGoalStorageKey = business
-    ? `truerep_monthly_goal_${business.id}`
+    ? `True Repp_monthly_goal_${business.id}`
     : user
-      ? `truerep_monthly_goal_${user.id}`
-      : "truerep_monthly_goal";
+      ? `True Repp_monthly_goal_${user.id}`
+      : "True Repp_monthly_goal";
   const totalFeedback = feedbacks.length;
   const averageRating = totalFeedback
     ? feedbacks.reduce((sum, item) => sum + item.rating, 0) / totalFeedback
@@ -828,7 +828,7 @@ export default function Dashboard() {
             <BookmarkIcon className="h-6 w-6 shrink-0 text-teal-600" />
             {!sidebarCollapsed && (
               <span className="truncate text-lg font-bold tracking-tight text-slate-900">
-                TrueRep
+                True Repp
               </span>
             )}
           </div>
@@ -1111,7 +1111,7 @@ export default function Dashboard() {
               <div className={`relative grid gap-6 lg:gap-8 ${activeTab === "dashboard" ? "lg:grid-cols-[1.15fr_1.1fr_0.95fr]" : "lg:grid-cols-[1.15fr_1fr]"} lg:items-start`}>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.34em] text-blue-700">
-                    TrueRep
+                    True Repp
                   </p>
                   <h1 className="mt-2 text-3xl font-bold leading-tight text-slate-950 sm:text-5xl">
                     {pageTitle}

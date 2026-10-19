@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ClipboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,6 +58,7 @@ import {
   YAxis,
 } from "recharts";
 import dashboardBg from "@/assets/bg.png";
+import { GoogleLogo } from "@/components/GoogleLogo";
 
 type Business = {
   id: string;
@@ -88,6 +89,49 @@ type TeamMember = {
   email: string;
   role: string;
   created_at: string;
+};
+
+const extractPlaceId = (input: string): string | null => {
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  // 1. If it's already a write review link, extract placeid
+  if (trimmed.includes("search.google.com/local/writereview")) {
+    const match = trimmed.match(/placeid=([a-zA-Z0-9_\-]+)/i);
+    return match ? match[1] : null;
+  }
+
+  // 2. If it's a maps link with place_id or placeid query param
+  const urlParamMatch = trimmed.match(/(?:place_id|placeid)[:=]([a-zA-Z0-9_\-]+)/i);
+  if (urlParamMatch && urlParamMatch[1]) {
+    return urlParamMatch[1];
+  }
+
+  // 3. If prefixed with "Place ID: ChIJ..." or "Place ID ChIJ..." or "placeid: ..."
+  const labelMatch = trimmed.match(/^(?:place[\s_-]*id[\s:=]+)([a-zA-Z0-9_\-]+)$/i);
+  if (labelMatch && labelMatch[1]) {
+    return labelMatch[1];
+  }
+
+  // 4. Raw Place ID: alphanumeric string without web protocols or domains
+  if (
+    !trimmed.startsWith("http://") &&
+    !trimmed.startsWith("https://") &&
+    !trimmed.includes("/") &&
+    !trimmed.includes(".com") &&
+    !trimmed.includes(".net") &&
+    !trimmed.includes(".org") &&
+    !trimmed.includes(".io") &&
+    /^[a-zA-Z0-9_\-]{8,}$/.test(trimmed)
+  ) {
+    return trimmed;
+  }
+
+  return null;
+};
+
+const generateGoogleReviewUrl = (placeId: string): string => {
+  return `https://search.google.com/local/writereview?placeid=${placeId.trim()}`;
 };
 
 export default function Dashboard() {
@@ -149,9 +193,18 @@ export default function Dashboard() {
     navigate("/dashboard", { replace: true });
   }, [navigate, section]);
 
+  const isInitialLoadDone = useRef(false);
+
   useEffect(() => {
-    if (user) fetchData();
-  }, [user]);
+    if (user?.id) {
+      if (!isInitialLoadDone.current) {
+        isInitialLoadDone.current = true;
+        fetchData(true);
+      } else {
+        fetchData(false);
+      }
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     if (!user) return;
@@ -159,7 +212,7 @@ export default function Dashboard() {
     const metadata = user.user_metadata ?? {};
     setProfileFirstName((metadata.firstName as string) ?? "");
     setProfileLastName((metadata.lastName as string) ?? "");
-  }, [user]);
+  }, [user?.id]);
 
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
@@ -175,38 +228,45 @@ export default function Dashboard() {
     };
   }, []);
 
-  const fetchData = async () => {
-    setLoading(true);
-    const { data: biz } = await supabase
-      .from("businesses")
-      .select("*")
-      .eq("user_id", user!.id)
-      .maybeSingle();
+  const fetchData = async (showLoading = false) => {
+    if (showLoading) {
+      setLoading(true);
+    }
+    try {
+      const { data: biz } = await supabase
+        .from("businesses")
+        .select("*")
+        .eq("user_id", user!.id)
+        .maybeSingle();
 
-    if (biz) {
-      setBusiness(biz as Business);
-      setBusinessName((biz as Business).name);
+      if (biz) {
+        setBusiness(biz as Business);
+        setBusinessName((biz as Business).name);
 
-      const [{ data: fb }, { data: links }] = await Promise.all([
-        supabase
-          .from("feedback")
+        const [{ data: fb }, { data: links }] = await Promise.all([
+          supabase
+            .from("feedback")
+            .select("*")
+            .eq("business_id", biz.id)
+            .order("created_at", { ascending: false }),
+          supabase.from("review_links").select("*").eq("business_id", biz.id),
+        ]);
+
+        const { data: members } = await supabase
+          .from("team_members")
           .select("*")
           .eq("business_id", biz.id)
-          .order("created_at", { ascending: false }),
-        supabase.from("review_links").select("*").eq("business_id", biz.id),
-      ]);
+          .order("created_at", { ascending: true });
 
-      const { data: members } = await supabase
-        .from("team_members")
-        .select("*")
-        .eq("business_id", biz.id)
-        .order("created_at", { ascending: true });
-
-      setFeedbacks((fb as Feedback[]) || []);
-      setReviewLinks((links as ReviewLink[]) || []);
-      setTeamMembers((members as TeamMember[]) || []);
+        setFeedbacks((fb as Feedback[]) || []);
+        setReviewLinks((links as ReviewLink[]) || []);
+        setTeamMembers((members as TeamMember[]) || []);
+      }
+    } finally {
+      if (showLoading) {
+        setLoading(false);
+      }
     }
-    setLoading(false);
   };
 
   const reviewUrl = business
@@ -501,17 +561,87 @@ export default function Dashboard() {
     setIsSavingGoal(false);
   };
 
+  const handleUrlPaste = (e: ClipboardEvent<HTMLInputElement>) => {
+    const pastedText = e.clipboardData.getData("text");
+    const placeId = extractPlaceId(pastedText);
+    if (placeId) {
+      e.preventDefault();
+      const generatedUrl = generateGoogleReviewUrl(placeId);
+      setNewUrl(generatedUrl);
+      if (!newPlatform.trim()) {
+        setNewPlatform("Google");
+      }
+      toast.success("Google review link generated from Place ID!");
+    }
+  };
+
+  const handleUrlChange = (value: string) => {
+    const placeId = extractPlaceId(value);
+    if (
+      placeId &&
+      (value.toLowerCase().includes("place") ||
+        value.startsWith("ChI") ||
+        value.length >= 25)
+    ) {
+      const generatedUrl = generateGoogleReviewUrl(placeId);
+      if (value !== generatedUrl) {
+        setNewUrl(generatedUrl);
+        if (!newPlatform.trim()) {
+          setNewPlatform("Google");
+        }
+        return;
+      }
+    }
+    setNewUrl(value);
+  };
+
   const addReviewLink = async () => {
-    if (!business || !newPlatform.trim() || !newUrl.trim()) return;
-    const { data } = await supabase
+    if (!business) return;
+
+    const trimmedUrl = newUrl.trim();
+    let platformName = newPlatform.trim();
+
+    if (!trimmedUrl) {
+      toast.error("Please enter a platform URL or Google Place ID.");
+      return;
+    }
+
+    let finalUrl = trimmedUrl;
+    const placeId = extractPlaceId(trimmedUrl);
+    if (
+      placeId &&
+      !trimmedUrl.startsWith("http://") &&
+      !trimmedUrl.startsWith("https://")
+    ) {
+      finalUrl = generateGoogleReviewUrl(placeId);
+      if (!platformName) {
+        platformName = "Google";
+      }
+    }
+
+    if (!platformName) {
+      toast.error("Please enter a platform name (e.g. Google).");
+      return;
+    }
+
+    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+      finalUrl = `https://${finalUrl}`;
+    }
+
+    const { data, error } = await supabase
       .from("review_links")
       .insert({
         business_id: business.id,
-        platform_name: newPlatform.trim(),
-        url: newUrl.trim(),
+        platform_name: platformName,
+        url: finalUrl,
       })
       .select()
       .single();
+
+    if (error) {
+      toast.error("Failed to add review link");
+      return;
+    }
 
     if (data) {
       setReviewLinks([...reviewLinks, data as ReviewLink]);
@@ -1498,33 +1628,32 @@ export default function Dashboard() {
                 <CardContent className="space-y-4">
                   {showPlatformSetupGuide && (
                     <div className="rounded-lg border border-blue-200 bg-blue-50/70 p-4 text-sm text-slate-700">
-                      <p className="mb-2 font-semibold text-slate-900">
+                      <p className="mb-2 flex items-center gap-2 font-semibold text-slate-900">
+                        <GoogleLogo className="h-4 w-4" />
                         How to setup Google review link
                       </p>
-                      <ol className="list-decimal space-y-1 pl-5">
+                      <ol className="list-decimal space-y-1.5 pl-5">
                         <li>
-                          Open this link:{" "}
+                          Open Google's Place ID Finder:{" "}
                           <a
                             href="https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder"
                             target="_blank"
                             rel="noreferrer"
-                            className="mt-1 inline-block max-w-full break-words text-blue-700 underline [overflow-wrap:anywhere]"
+                            className="mt-1 inline-block max-w-full break-words font-medium text-blue-700 underline"
                           >
                             https://developers.google.com/maps/documentation/javascript/examples/places-placeid-finder
                           </a>
                         </li>
-                        <li>Search your shop name in the map search.</li>
-                        <li>Copy the placeid.</li>
+                        <li>Search your shop name or location in the map search.</li>
                         <li>
-                          Use this URL format and replace {"{"}placeid{"}"}:{" "}
-                          <span className="mt-1 block max-w-full break-words font-mono text-xs text-slate-800 [overflow-wrap:anywhere]">
-                            https://search.google.com/local/writereview?placeid=
-                            {"{"}placeid{"}"}
-                          </span>
+                          Copy the <strong>Place ID</strong> (e.g.,{" "}
+                          <code className="rounded bg-blue-100 px-1 py-0.5 font-mono text-xs text-blue-900">
+                            ChIJN1t_tDeuEmsRUsoyG83frY4
+                          </code>
+                          ).
                         </li>
                         <li>
-                          Copy the final link and save it here in Review
-                          Platforms.
+                          Paste the copied Place ID directly into the <strong>Platform URL</strong> field below — our system will automatically generate your official Google review link!
                         </li>
                       </ol>
                     </div>
@@ -1536,43 +1665,85 @@ export default function Dashboard() {
                         No platform links yet
                       </div>
                     )}
-                    {reviewLinks.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center justify-between rounded-lg border border-slate-200/90 bg-white/75 px-3 py-2 transition hover:bg-white"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-semibold text-gray-900">
-                            {item.platform_name}
-                          </p>
-                          <p className="truncate text-xs text-gray-500">
-                            {item.url}
-                          </p>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => deleteReviewLink(item.id)}
+                    {reviewLinks.map((item) => {
+                      const isGoogle =
+                        item.platform_name.toLowerCase().includes("google") ||
+                        item.url.includes("google.com");
+
+                      return (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between gap-3 rounded-lg border border-slate-200/90 bg-white/85 px-3 py-2.5 transition hover:bg-white shadow-2xs"
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
-                        </Button>
-                      </div>
-                    ))}
+                          <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-slate-200/80 bg-white shadow-2xs">
+                              {isGoogle ? (
+                                <GoogleLogo className="h-4 w-4" />
+                              ) : (
+                                <Link className="h-4 w-4 text-slate-500" />
+                              )}
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-1.5">
+                                <p className="text-sm font-semibold text-gray-900">
+                                  {item.platform_name}
+                                </p>
+                                {isGoogle && (
+                                  <span className="rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-medium text-blue-700">
+                                    Official
+                                  </span>
+                                )}
+                              </div>
+                              <p className="truncate text-xs text-gray-500">
+                                {item.url}
+                              </p>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteReviewLink(item.id)}
+                          >
+                            <Trash2 className="h-4 w-4 text-red-500" />
+                          </Button>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="space-y-2 border-t border-gray-200 pt-4">
-                    <Label>Add New Platform</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>Add New Platform</Label>
+                      <button
+                        type="button"
+                        onClick={() => setNewPlatform("Google")}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-xs font-medium text-slate-700 shadow-2xs hover:bg-slate-50 transition"
+                      >
+                        <GoogleLogo className="h-3 w-3" />
+                        Set to Google
+                      </button>
+                    </div>
                     <div className="grid gap-2 md:grid-cols-[1fr_1.4fr_auto]">
+                      <div className="relative">
+                        <Input
+                          placeholder="Platform name (e.g. Google)"
+                          value={newPlatform}
+                          onChange={(e) => setNewPlatform(e.target.value)}
+                          className={`border-slate-200 bg-white/85 ${
+                            newPlatform.toLowerCase().includes("google") ? "pl-9" : ""
+                          }`}
+                        />
+                        {newPlatform.toLowerCase().includes("google") && (
+                          <div className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+                            <GoogleLogo className="h-4 w-4" />
+                          </div>
+                        )}
+                      </div>
                       <Input
-                        placeholder="Platform name"
-                        value={newPlatform}
-                        onChange={(e) => setNewPlatform(e.target.value)}
-                        className="border-slate-200 bg-white/85"
-                      />
-                      <Input
-                        placeholder="Platform URL"
+                        placeholder="Paste Place ID (e.g. ChIJ...) or Platform URL"
                         value={newUrl}
-                        onChange={(e) => setNewUrl(e.target.value)}
+                        onChange={(e) => handleUrlChange(e.target.value)}
+                        onPaste={handleUrlPaste}
                         className="border-slate-200 bg-white/85"
                       />
                       <Button
@@ -1582,6 +1753,9 @@ export default function Dashboard() {
                         <Plus className="mr-1 h-4 w-4" /> Add
                       </Button>
                     </div>
+                    <p className="text-xs text-slate-500">
+                      💡 Tip: Paste your copied Google Place ID directly — the full review link is generated automatically.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

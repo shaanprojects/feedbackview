@@ -16,13 +16,11 @@ interface AuthContextType {
   signUp: (
     email: string,
     password: string,
-    captchaToken: string,
     signupData?: Record<string, unknown>,
   ) => Promise<{ error: any }>;
   signIn: (
     email: string,
     password: string,
-    captchaToken: string,
   ) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
@@ -60,36 +58,6 @@ const ensureSessionStartedAt = () => {
 const isSessionExpired = (startedAt: number) =>
   Date.now() - startedAt >= MERCHANT_SESSION_TTL_MS;
 
-const verifyCaptchaToken = async (
-  captchaToken: string,
-  action: "signin" | "signup",
-) => {
-  const { data, error } = await supabase.functions.invoke("verify-recaptcha", {
-    body: {
-      token: captchaToken,
-      action,
-    },
-  });
-
-  if (error) {
-    return {
-      error: new Error(
-        "Captcha verification request failed. Please try again.",
-      ),
-    };
-  }
-
-  if (!data?.success) {
-    return {
-      error: new Error(
-        "Captcha verification failed. Please retry the challenge.",
-      ),
-    };
-  }
-
-  return { error: null };
-};
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -121,8 +89,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       if (!isMounted) return;
-      setSession(nextSession);
-      setUser(nextSession.user ?? null);
+
+      setSession((prevSession) => {
+        if (!nextSession && !prevSession) return null;
+        if (
+          prevSession &&
+          nextSession &&
+          prevSession.access_token === nextSession.access_token &&
+          prevSession.user?.id === nextSession.user?.id
+        ) {
+          return prevSession;
+        }
+        return nextSession;
+      });
+
+      setUser((prevUser) => {
+        if (!nextSession?.user && !prevUser) return null;
+        if (
+          prevUser &&
+          nextSession?.user &&
+          prevUser.id === nextSession.user.id &&
+          prevUser.updated_at === nextSession.user.updated_at
+        ) {
+          return prevUser;
+        }
+        return nextSession?.user ?? null;
+      });
+
       setLoading(false);
     };
 
@@ -164,15 +157,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signUp = async (
     email: string,
     password: string,
-    captchaToken: string,
     signupData?: Record<string, unknown>,
   ) => {
-    const captchaResult = await verifyCaptchaToken(captchaToken, "signup");
-
-    if (captchaResult.error) {
-      return { error: captchaResult.error };
-    }
-
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -187,14 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (
     email: string,
     password: string,
-    captchaToken: string,
   ) => {
-    const captchaResult = await verifyCaptchaToken(captchaToken, "signin");
-
-    if (captchaResult.error) {
-      return { error: captchaResult.error };
-    }
-
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

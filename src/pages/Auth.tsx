@@ -1,6 +1,5 @@
-import { FormEvent, useEffect, useMemo, useState, useRef } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import ReCAPTCHA from "react-google-recaptcha";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -141,19 +140,11 @@ export default function Auth() {
   const [expiration, setExpiration] = useState("");
   const [cvv, setCvv] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [loading, setLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const navigate = useNavigate();
-  const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
   const cardDigits = useMemo(() => cardNumber.replace(/\D/g, ""), [cardNumber]);
   const cardBrand = useMemo(() => detectCardBrand(cardDigits), [cardDigits]);
-
-  const resetCaptcha = () => {
-    setCaptchaToken(null);
-    recaptchaRef.current?.reset();
-  };
 
   useEffect(() => {
     if (authMode === "signup") {
@@ -271,21 +262,11 @@ export default function Auth() {
       return;
     }
 
-    if (!recaptchaSiteKey) {
-      toast.error("Captcha is not configured. Add VITE_RECAPTCHA_SITE_KEY.");
-      return;
-    }
-
-    if (!captchaToken) {
-      toast.error("Please complete the captcha challenge.");
-      return;
-    }
-
     setLoading(true);
 
     try {
       if (isLogin) {
-        const { error } = await signIn(email, password, captchaToken);
+        const { error } = await signIn(email, password);
         if (error) {
           toast.error(error.message);
         } else {
@@ -316,7 +297,6 @@ export default function Auth() {
         const { error } = await signUp(
           email,
           password,
-          captchaToken,
           signupData,
         );
 
@@ -328,7 +308,6 @@ export default function Auth() {
         }
       }
     } finally {
-      resetCaptcha();
       setLoading(false);
     }
   };
@@ -587,32 +566,10 @@ export default function Auth() {
               </>
             )}
 
-            <div className="space-y-2">
-              <Label>Security Check</Label>
-              {recaptchaSiteKey ? (
-                <div className="flex justify-center md:justify-start">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={recaptchaSiteKey}
-                    onChange={(token) => setCaptchaToken(token)}
-                    onExpired={() => setCaptchaToken(null)}
-                    onErrored={() => {
-                      setCaptchaToken(null);
-                      toast.error("Captcha verification failed. Please try again.");
-                    }}
-                  />
-                </div>
-              ) : (
-                <p className="text-sm text-red-600">
-                  Captcha not configured. Set VITE_RECAPTCHA_SITE_KEY to enable
-                  authentication.
-                </p>
-              )}
-            </div>
             <Button
               type="submit"
               className="w-full rounded-xl bg-teal-600 text-white hover:bg-teal-700"
-              disabled={loading || !captchaToken || !recaptchaSiteKey}
+              disabled={loading}
             >
               {loading
                 ? "Please wait..."
@@ -626,7 +583,6 @@ export default function Auth() {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                resetCaptcha();
               }}
               className="text-primary font-medium hover:underline"
             >

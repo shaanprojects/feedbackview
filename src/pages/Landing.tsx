@@ -22,6 +22,14 @@ import {
   Zap as ZapIcon,
   Menu,
   X,
+  Utensils,
+  Scissors,
+  Stethoscope,
+  Car,
+  Wrench,
+  Store,
+  Sparkles,
+  CheckCircle2,
 } from "lucide-react";
 import dashboardBg from "@/assets/bg.png";
 
@@ -55,6 +63,57 @@ const features = [
     icon: Plug,
     title: "Multi-Platform Integration",
     desc: "Connect Google, Yelp, Facebook, Trustpilot, and 50+ platforms.",
+  },
+];
+
+const industries = [
+  {
+    icon: Utensils,
+    iconColor: "text-amber-700 bg-amber-50 border-amber-200",
+    name: "Food & Dining",
+    sub: "Restaurants, cafes, bakeries & bars",
+    desc: "Route happy diners straight to Google reviews while catching complaints privately before they hit Yelp.",
+    spot: "Table tents & bill folders",
+  },
+  {
+    icon: Scissors,
+    iconColor: "text-rose-700 bg-rose-50 border-rose-200",
+    name: "Salons & Spas",
+    sub: "Barbers, stylists, nail bars & aesthetics",
+    desc: "New clients pick stylists by star ratings. Capture glowing 5-star reviews in 10 seconds right from the chair.",
+    spot: "Styling mirrors & checkout desk",
+  },
+  {
+    icon: Stethoscope,
+    iconColor: "text-teal-700 bg-teal-50 border-teal-200",
+    name: "Clinics & Wellness",
+    sub: "Dental, chiro, physio & medical practices",
+    desc: "Handle patient concerns privately while encouraging satisfied patients to rank you #1 in local search.",
+    spot: "Reception & appointment cards",
+  },
+  {
+    icon: Wrench,
+    iconColor: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    name: "Home Services & Trades",
+    sub: "Plumbers, HVAC, electricians & cleaners",
+    desc: "Homeowners never hire without reading reviews. Collect 5-star ratings right after completing the job.",
+    spot: "Digital invoices & leave-behind cards",
+  },
+  {
+    icon: Car,
+    iconColor: "text-blue-700 bg-blue-50 border-blue-200",
+    name: "Auto & Detailing",
+    sub: "Mechanics, body shops, car wash & tire shops",
+    desc: "Auto repair runs on trust. Turn customer relief into verified Google ratings right upon vehicle pickup.",
+    spot: "Key tags & invoice footers",
+  },
+  {
+    icon: Store,
+    iconColor: "text-purple-700 bg-purple-50 border-purple-200",
+    name: "Retail & Local Services",
+    sub: "Boutiques, gyms, pet care & local shops",
+    desc: "Convert everyday foot traffic into Google Maps dominance that beats out online and big-box competitors.",
+    spot: "POS counter & shopping bags",
   },
 ];
 
@@ -385,10 +444,10 @@ export default function Landing() {
                 Pricing
               </a>
               <a
-                href="#stories"
+                href="#industries"
                 className="text-base font-semibold text-slate-700 transition-colors hover:text-slate-950"
               >
-                Success
+                Who Needs This?
               </a>
               <a
                 href="#playbooks"
@@ -434,11 +493,11 @@ export default function Landing() {
                   Pricing
                 </a>
                 <a
-                  href="#stories"
+                  href="#industries"
                   className="rounded-lg border border-slate-300/80 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-700"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
-                  Success
+                  Who Needs This?
                 </a>
                 <a
                   href="#playbooks"
@@ -959,58 +1018,77 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Who Needs TrueRep Most? (Industries & Use Cases) */}
       <section
-        id="stories"
-        className="border-t border-gray-200/70 bg-white py-20"
+        id="industries"
+        className="border-t border-gray-200/70 bg-gradient-to-b from-slate-50/70 to-white py-14 sm:py-18"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 reveal-on-scroll" data-reveal>
-            <p className="text-teal-600 font-semibold text-sm uppercase mb-2 tracking-wide">
-              Success Stories
-            </p>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Trusted by thousands of businesses
-            </h2>
-          </div>
-          <div
-            className="relative overflow-hidden reveal-on-scroll"
-            data-reveal
-            data-delay="70"
-          >
-            <div className="testimonial-marquee-track">
-              {[...testimonials, ...testimonials].map((testimonial, i) => (
-                <article
-                  key={`${testimonial.name}-${i}`}
-                  className="w-full max-w-[340px] shrink-0 rounded-2xl border border-white/60 bg-white/60 p-7 shadow-md backdrop-blur-sm"
-                >
-                  <div className="mb-5 flex items-center gap-4">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-teal-200 to-blue-200 shadow-md">
-                      <testimonial.icon className="h-7 w-7 text-teal-700" />
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-900">
-                        {testimonial.name}
-                      </p>
-                      <p className="text-sm text-gray-600">
-                        {testimonial.role}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mb-3 flex gap-1">
-                    {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star
-                        key={j}
-                        className="h-4 w-4 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
-                  <p className="text-gray-700 italic leading-relaxed">
-                    "{testimonial.text}"
-                  </p>
-                </article>
-              ))}
+          <div className="text-center mb-10 sm:mb-12 reveal-on-scroll" data-reveal>
+            <div className="inline-flex items-center gap-2 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 shadow-2xs">
+              <Sparkles className="h-3.5 w-3.5 text-teal-600" />
+              Built For Every Local Business
             </div>
+            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight">
+              Who Needs TrueRep Most?
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-gray-600 max-w-xl mx-auto">
+              If customers find you on Google or choose you by your star rating, TrueRep protects and grows your reputation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+            {industries.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={item.name}
+                  className="rounded-2xl border border-slate-200/90 bg-white p-5 sm:p-6 shadow-2xs hover:shadow-md hover:border-teal-300 transition-all flex flex-col justify-between"
+                  data-reveal
+                  data-delay={40 + i * 30}
+                >
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${item.iconColor}`}>
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-base font-bold text-gray-900 truncate">
+                          {item.name}
+                        </h3>
+                        <p className="text-[11px] text-gray-500 truncate">
+                          {item.sub}
+                        </p>
+                      </div>
+                    </div>
+
+                    <p className="text-xs sm:text-[13px] text-gray-600 leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span className="font-medium text-slate-500">
+                      📍 QR spot: <strong className="text-slate-800">{item.spot}</strong>
+                    </span>
+                    <span className="font-bold text-teal-700 shrink-0 flex items-center gap-1">
+                      1-Tap Review <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 inline" />
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link to="/auth?mode=signup">
+              <Button
+                size="lg"
+                className="rounded-2xl bg-slate-900 text-white hover:bg-black px-7 py-2.5 text-sm font-bold shadow-sm transition-all hover:scale-105"
+              >
+                Start Collecting 5-Star Reviews
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -1232,7 +1310,7 @@ export default function Landing() {
                       to="/success-stories"
                       className="transition-colors hover:text-slate-950"
                     >
-                      Success Stories
+                      Who Needs This?
                     </Link>
                   </li>
                   <li>

@@ -47,14 +47,15 @@ const pageContentMap: Record<PageKey, PageContent> = {
     ],
   },
   "success-stories": {
-    title: "Success Stories",
+    title: "Who Needs TrueRep Most?",
     subtitle:
-      "See how businesses improved ratings, trust, and customer retention using TrueRep.",
+      "Built for local businesses where customer trust, Google Maps ranking, and ratings make or break revenue.",
     points: [
-      "Restaurants improving ratings from below 4.0 to above 4.8.",
-      "Retail teams collecting 5x more feedback with QR-driven prompts.",
-      "Service businesses reducing unresolved complaints with instant alerts.",
-      "Multi-location brands standardizing response quality at scale.",
+      "Restaurants & Cafes: 94% of diners check Google Maps before choosing where to eat. Catch service issues privately at tables before they hit Yelp.",
+      "Salons, Spas & Beauty Studios: Clients trust personal appearance only to top-rated stylists. Capture positive reviews right at the styling chair.",
+      "Dental & Healthcare Clinics: Patients research medical providers thoroughly. Resolve billing or wait-time confusion privately with leadership.",
+      "Auto Repair & Mechanics: Win customer trust for high-ticket repairs by letting ecstatic drivers leave immediate 5-star Google reviews.",
+      "Home Contractors (HVAC, Plumbing, Electrical): Homeowners check 4.5+ star ratings before letting technicians into their private homes.",
     ],
   },
   about: {

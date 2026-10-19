@@ -468,7 +468,7 @@ export default function Landing() {
                 href="#impact"
                 className="text-base font-semibold text-slate-700 transition-colors hover:text-slate-950"
               >
-                Why It Pays
+                Why TrueRep
               </a>
             </div>
 
@@ -519,7 +519,7 @@ export default function Landing() {
                   className="rounded-lg border border-slate-300/80 bg-white/80 px-3 py-2 text-sm font-semibold text-slate-700"
                   onClick={() => setIsMobileNavOpen(false)}
                 >
-                  Why It Pays
+                  Why TrueRep
                 </a>
               </div>
 

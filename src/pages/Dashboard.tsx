@@ -42,6 +42,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import {
   BarChart3,
+  Calendar,
   Check,
   ChevronRight,
   Copy,
@@ -53,9 +54,11 @@ import {
   Link,
   LogOut,
   Menu,
+  MessageSquare,
   PanelLeft,
   PanelLeftClose,
   Plus,
+  Quote,
   Settings,
   Star,
   Trash2,
@@ -319,8 +322,8 @@ export default function Dashboard() {
     );
   }).length;
   const activeLinks = reviewLinks.length;
-  const latestFeedback = useMemo(() => feedbacks.slice(0, 8), [feedbacks]);
-  const feedbackPerPage = 2;
+  const latestFeedback = useMemo(() => feedbacks, [feedbacks]);
+  const feedbackPerPage = 3;
   const feedbackPageCount = Math.max(
     1,
     Math.ceil(latestFeedback.length / feedbackPerPage),
@@ -1256,126 +1259,258 @@ export default function Dashboard() {
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               <div className="grid grid-cols-1 gap-6">
-                <Card className="glass-card glass-card-hover border-2 border-slate-400/80">
-                  <CardHeader>
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <CardTitle className="text-lg">
-                          Latest Feedback
-                        </CardTitle>
-                        <CardDescription>
-                          Most recent responses from your customers
-                        </CardDescription>
+                <Card className="rounded-2xl border border-slate-200/90 bg-white/90 shadow-sm backdrop-blur-sm overflow-hidden">
+                  <CardHeader className="border-b border-slate-100 bg-slate-50/60 p-5">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-teal-50 text-teal-600 border border-teal-100/80 shadow-xs">
+                          <MessageSquare className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2.5">
+                            <CardTitle className="text-lg font-bold text-slate-800">
+                              Latest Feedback
+                            </CardTitle>
+                            <span className="inline-flex items-center rounded-full bg-teal-50 px-2.5 py-0.5 text-xs font-semibold text-teal-700 border border-teal-200/70">
+                              {feedbacks.length} {feedbacks.length === 1 ? "response" : "responses"}
+                            </span>
+                          </div>
+                          <CardDescription className="text-xs text-slate-500 mt-0.5">
+                            Most recent customer reviews and private ratings
+                          </CardDescription>
+                        </div>
                       </div>
 
                       {latestFeedback.length > 0 && (
-                        <div className="flex flex-wrap items-center gap-2 self-start">
-                          <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
-                            <Checkbox
-                              id="select-page-feedback"
-                              checked={
-                                allCurrentPageSelected
-                                  ? true
-                                  : selectedOnCurrentPageCount > 0
-                                    ? "indeterminate"
-                                    : false
-                              }
-                              onCheckedChange={(checked) =>
-                                toggleCurrentPageSelection(checked === true)
-                              }
-                              disabled={isDeletingFeedback}
-                            />
-                            <Label
-                              htmlFor="select-page-feedback"
-                              className="text-xs font-medium text-slate-600"
-                            >
-                              Select page
-                            </Label>
-                          </div>
-
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            onClick={() =>
-                              requestFeedbackDelete(selectedFeedbackIds)
-                            }
-                            disabled={
-                              selectedFeedbackIds.length === 0 ||
-                              isDeletingFeedback
-                            }
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            Delete selected ({selectedFeedbackIds.length})
-                          </Button>
+                        <div className="flex flex-wrap items-center gap-2.5 self-start sm:self-auto">
+                          {selectedFeedbackIds.length > 0 ? (
+                            <div className="flex items-center gap-2 rounded-xl bg-rose-50/70 border border-rose-200/80 p-1 pl-3 shadow-xs">
+                              <span className="text-xs font-semibold text-rose-700">
+                                {selectedFeedbackIds.length} selected
+                              </span>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => setSelectedFeedbackIds([])}
+                                className="h-7 px-2 text-xs text-slate-600 hover:text-slate-900"
+                              >
+                                Clear
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() =>
+                                  requestFeedbackDelete(selectedFeedbackIds)
+                                }
+                                disabled={isDeletingFeedback}
+                                className="h-7 gap-1.5 px-3 text-xs bg-rose-600 hover:bg-rose-700 font-medium"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Delete ({selectedFeedbackIds.length})
+                              </Button>
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-2 rounded-xl border border-slate-200/90 bg-white px-3 py-1.5 shadow-xs hover:border-slate-300 transition-colors">
+                              <Checkbox
+                                id="select-page-feedback"
+                                checked={
+                                  allCurrentPageSelected
+                                    ? true
+                                    : selectedOnCurrentPageCount > 0
+                                      ? "indeterminate"
+                                      : false
+                                }
+                                onCheckedChange={(checked) =>
+                                  toggleCurrentPageSelection(checked === true)
+                                }
+                                disabled={isDeletingFeedback}
+                              />
+                              <Label
+                                htmlFor="select-page-feedback"
+                                className="cursor-pointer text-xs font-medium text-slate-600 select-none"
+                              >
+                                Select page
+                              </Label>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="p-5 space-y-4">
                     {latestFeedback.length === 0 ? (
-                      <div className="py-8 text-center text-slate-500">
-                        <p>No feedback yet</p>
+                      <div className="py-12 text-center">
+                        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-teal-600 border border-teal-100 shadow-xs mb-3">
+                          <MessageSquare className="h-6 w-6" />
+                        </div>
+                        <h4 className="text-base font-semibold text-slate-800">
+                          No feedback received yet
+                        </h4>
+                        <p className="mx-auto mt-1 max-w-sm text-xs text-slate-500">
+                          When your customers submit private reviews via your custom link or QR code, their feedback will show up right here.
+                        </p>
                       </div>
                     ) : (
                       <>
-                        {paginatedFeedback.map((fb) => (
-                          <article
-                            key={fb.id}
-                            className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-slate-50 to-slate-100/70 p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                          >
-                            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                              <div className="flex items-center gap-2">
-                                <Checkbox
-                                  checked={selectedFeedbackIds.includes(fb.id)}
-                                  onCheckedChange={(checked) =>
-                                    toggleFeedbackSelection(
-                                      fb.id,
-                                      checked === true,
-                                    )
+                        <div className="grid grid-cols-1 gap-3.5">
+                          {paginatedFeedback.map((fb) => {
+                            const isSelected = selectedFeedbackIds.includes(fb.id);
+                            const ratingBadge =
+                              fb.rating >= 5
+                                ? {
+                                    label: "Excellent",
+                                    className:
+                                      "bg-emerald-50 text-emerald-700 border-emerald-200/80",
                                   }
-                                  disabled={isDeletingFeedback}
-                                  aria-label="Select comment"
-                                />
-                                <div className="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1">
-                                  <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map((value) => (
-                                      <Star
-                                        key={value}
-                                        className={`h-4 w-4 ${
-                                          value <= fb.rating
-                                            ? "fill-amber-400 text-amber-400"
-                                            : "text-gray-300"
-                                        }`}
+                                : fb.rating >= 4
+                                  ? {
+                                      label: "Good",
+                                      className:
+                                        "bg-teal-50 text-teal-700 border-teal-200/80",
+                                    }
+                                  : fb.rating >= 3
+                                    ? {
+                                        label: "Neutral",
+                                        className:
+                                          "bg-amber-50 text-amber-700 border-amber-200/80",
+                                      }
+                                    : {
+                                        label: "Needs Attention",
+                                        className:
+                                          "bg-rose-50 text-rose-700 border-rose-200/80",
+                                      };
+
+                            return (
+                              <article
+                                key={fb.id}
+                                className={`group relative rounded-xl border p-4 transition-all duration-200 ${
+                                  isSelected
+                                    ? "border-teal-500/80 bg-teal-50/20 shadow-xs"
+                                    : "border-slate-200/80 bg-white hover:border-slate-300 hover:shadow-md"
+                                }`}
+                              >
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                  {/* Left: Checkbox + Avatar + Rating info */}
+                                  <div className="flex items-start gap-3">
+                                    <div className="pt-1.5">
+                                      <Checkbox
+                                        checked={isSelected}
+                                        onCheckedChange={(checked) =>
+                                          toggleFeedbackSelection(
+                                            fb.id,
+                                            checked === true,
+                                          )
+                                        }
+                                        disabled={isDeletingFeedback}
+                                        aria-label="Select feedback"
                                       />
-                                    ))}
+                                    </div>
+
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-slate-100 to-slate-200/80 border border-slate-200 text-slate-600 shadow-2xs">
+                                      <User className="h-5 w-5 text-slate-500" />
+                                    </div>
+
+                                    <div className="space-y-1">
+                                      <div className="flex flex-wrap items-center gap-2">
+                                        <span className="text-sm font-semibold text-slate-800">
+                                          Customer Response
+                                        </span>
+                                        <span
+                                          className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] font-semibold ${ratingBadge.className}`}
+                                        >
+                                          {ratingBadge.label}
+                                        </span>
+                                      </div>
+
+                                      {/* Stars & numeric rating */}
+                                      <div className="flex items-center gap-1.5">
+                                        <div className="flex items-center gap-0.5">
+                                          {[1, 2, 3, 4, 5].map((value) => (
+                                            <Star
+                                              key={value}
+                                              className={`h-4 w-4 ${
+                                                value <= fb.rating
+                                                  ? "fill-amber-400 text-amber-400"
+                                                  : "text-slate-200"
+                                              }`}
+                                            />
+                                          ))}
+                                        </div>
+                                        <span className="text-xs font-bold text-slate-700">
+                                          {fb.rating}.0
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Right: Date & Delete button */}
+                                  <div className="flex items-center justify-between sm:justify-end gap-2.5 pl-7 sm:pl-0">
+                                    <div className="flex items-center gap-1 text-xs text-slate-400 font-medium">
+                                      <Calendar className="h-3.5 w-3.5" />
+                                      <span>
+                                        {new Date(fb.created_at).toLocaleDateString(
+                                          "en-US",
+                                          {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                          },
+                                        )}
+                                      </span>
+                                    </div>
+
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-8 w-8 rounded-lg text-slate-400 opacity-70 group-hover:opacity-100 hover:bg-rose-50 hover:text-rose-600 transition-all"
+                                      onClick={() =>
+                                        requestFeedbackDelete([fb.id])
+                                      }
+                                      disabled={isDeletingFeedback}
+                                      aria-label="Delete comment"
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
                                   </div>
                                 </div>
-                              </div>
-                              <div className="ml-auto flex items-center gap-2">
-                                <p className="shrink-0 text-xs font-medium text-slate-500">
-                                  {new Date(fb.created_at).toLocaleDateString()}
-                                </p>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 text-red-500 hover:bg-red-50 hover:text-red-600"
-                                  onClick={() => requestFeedbackDelete([fb.id])}
-                                  disabled={isDeletingFeedback}
-                                  aria-label="Delete comment"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </div>
-                            <p className="line-clamp-4 text-sm leading-relaxed text-slate-700">
-                              {fb.message || "No message"}
-                            </p>
-                          </article>
-                        ))}
+
+                                {/* Message */}
+                                <div className="mt-3 pl-8 sm:pl-13">
+                                  {fb.message ? (
+                                    <div className="relative rounded-lg bg-slate-50/90 border border-slate-100 px-3.5 py-2.5 text-sm leading-relaxed text-slate-700">
+                                      <Quote className="absolute -top-2 left-2.5 h-3.5 w-3.5 text-slate-300 fill-slate-200" />
+                                      <p className="pl-2">{fb.message}</p>
+                                    </div>
+                                  ) : (
+                                    <p className="text-xs italic text-slate-400">
+                                      No written feedback provided.
+                                    </p>
+                                  )}
+                                </div>
+                              </article>
+                            );
+                          })}
+                        </div>
 
                         {feedbackPageCount > 1 && (
-                          <div className="pt-1">
-                            <Pagination>
+                          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
+                            <p className="text-xs text-slate-500 font-medium">
+                              Showing{" "}
+                              <span className="font-semibold text-slate-700">
+                                {(feedbackPage - 1) * feedbackPerPage + 1}-
+                                {Math.min(
+                                  feedbackPage * feedbackPerPage,
+                                  latestFeedback.length,
+                                )}
+                              </span>{" "}
+                              of{" "}
+                              <span className="font-semibold text-slate-700">
+                                {latestFeedback.length}
+                              </span>{" "}
+                              responses
+                            </p>
+
+                            <Pagination className="mx-0 w-auto justify-end">
                               <PaginationContent>
                                 <PaginationItem>
                                   <PaginationPrevious
@@ -1388,8 +1523,8 @@ export default function Dashboard() {
                                     }}
                                     className={
                                       feedbackPage === 1
-                                        ? "pointer-events-none opacity-50"
-                                        : ""
+                                        ? "pointer-events-none opacity-40 cursor-not-allowed"
+                                        : "cursor-pointer"
                                     }
                                   />
                                 </PaginationItem>
@@ -1407,6 +1542,7 @@ export default function Dashboard() {
                                             event.preventDefault();
                                             setFeedbackPage(page);
                                           }}
+                                          className="cursor-pointer"
                                         >
                                           {page}
                                         </PaginationLink>
@@ -1426,8 +1562,8 @@ export default function Dashboard() {
                                     }}
                                     className={
                                       feedbackPage === feedbackPageCount
-                                        ? "pointer-events-none opacity-50"
-                                        : ""
+                                        ? "pointer-events-none opacity-40 cursor-not-allowed"
+                                        : "cursor-pointer"
                                     }
                                   />
                                 </PaginationItem>

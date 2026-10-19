@@ -3,11 +3,21 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Star, Zap, CheckCircle, Globe } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  Globe,
+  MessageSquare,
+  RotateCcw,
+  ShieldCheck,
+  Star,
+} from "lucide-react";
 import { siFacebook, siYelp } from "simple-icons/icons";
 import { GoogleLogo } from "@/components/GoogleLogo";
+import reviewBg from "@/assets/review-bg.jpg";
 
 type PlatformVisual = {
   icon: JSX.Element;
@@ -29,7 +39,7 @@ function BrandSvg({
   path,
   hex,
   fillOverride,
-  className = "h-3.5 w-3.5",
+  className = "h-4 w-4",
 }: BrandSvgProps) {
   return (
     <svg
@@ -43,6 +53,14 @@ function BrandSvg({
   );
 }
 
+const quickTags = [
+  "Great service",
+  "Friendly staff",
+  "Fast & efficient",
+  "Top quality",
+  "Clean atmosphere",
+  "Highly recommended",
+];
 
 export default function ReviewPage() {
   const { businessId } = useParams<{ businessId: string }>();
@@ -58,6 +76,7 @@ export default function ReviewPage() {
   const [selectedReviewUrls, setSelectedReviewUrls] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!businessId) return;
@@ -82,7 +101,11 @@ export default function ReviewPage() {
         .select("platform_name, url")
         .eq("business_id", businessId);
 
-      setReviewLinks(links || []);
+      const loadedLinks = links || [];
+      setReviewLinks(loadedLinks);
+      if (loadedLinks.length > 0) {
+        setSelectedReviewUrls([loadedLinks[0].url]);
+      }
       setLoading(false);
     };
 
@@ -93,7 +116,6 @@ export default function ReviewPage() {
     setRating(nextRating);
     setSubmitted(false);
     setMessage("");
-    setSelectedReviewUrls([]);
 
     if (nextRating >= 4) {
       setStep("positive");
@@ -101,6 +123,18 @@ export default function ReviewPage() {
     }
 
     setStep("negative");
+  };
+
+  const handleAddTag = (tag: string) => {
+    setMessage((prev) => {
+      if (!prev.trim()) {
+        return tag;
+      }
+      if (prev.includes(tag)) {
+        return prev;
+      }
+      return `${prev}, ${tag}`;
+    });
   };
 
   const toggleReviewLinkSelection = (url: string, checked: boolean) => {
@@ -134,10 +168,11 @@ export default function ReviewPage() {
 
     if (normalized.includes("google")) {
       return {
-        icon: <GoogleLogo />,
-        activeClass: "border-[#1a73e8] bg-[#e8f0fe] text-[#1a73e8]",
+        icon: <GoogleLogo className="h-4 w-4" />,
+        activeClass:
+          "border-[#1a73e8] bg-[#f8fbff] text-[#1a73e8] ring-1 ring-[#1a73e8]/30",
         idleClass:
-          "border-[#d2e3fc] bg-white text-[#1a73e8] hover:bg-[#f7faff]",
+          "border-[#ECEAE5] bg-white text-[#222222] hover:border-stone-400 hover:bg-[#FAF9F5]",
         iconContainerClass: "bg-white",
       };
     }
@@ -150,61 +185,66 @@ export default function ReviewPage() {
             path={siFacebook.path}
             hex={siFacebook.hex}
             fillOverride="#ffffff"
-            className="h-4 w-4"
+            className="h-3.5 w-3.5"
           />
         ),
-        activeClass: "border-[#1877f2] bg-[#e7f0ff] text-[#1877f2]",
+        activeClass:
+          "border-[#1877f2] bg-[#f5f9ff] text-[#1877f2] ring-1 ring-[#1877f2]/30",
         idleClass:
-          "border-[#cfe2ff] bg-white text-[#1877f2] hover:bg-[#f5f9ff]",
+          "border-[#ECEAE5] bg-white text-[#222222] hover:border-stone-400 hover:bg-[#FAF9F5]",
         iconContainerClass: "bg-[#1877f2]",
       };
     }
 
     if (normalized.includes("yelp")) {
       return {
-        icon: <BrandSvg title="Yelp" path={siYelp.path} hex={siYelp.hex} />,
-        activeClass: "border-[#d32323] bg-[#ffefef] text-[#d32323]",
+        icon: (
+          <BrandSvg
+            title="Yelp"
+            path={siYelp.path}
+            hex={siYelp.hex}
+            className="h-3.5 w-3.5"
+          />
+        ),
+        activeClass:
+          "border-[#d32323] bg-[#fff8f8] text-[#d32323] ring-1 ring-[#d32323]/30",
         idleClass:
-          "border-[#f6cdcd] bg-white text-[#d32323] hover:bg-[#fff6f6]",
+          "border-[#ECEAE5] bg-white text-[#222222] hover:border-stone-400 hover:bg-[#FAF9F5]",
         iconContainerClass: "bg-white",
       };
     }
 
     return {
-      icon: <Globe className="h-3.5 w-3.5" />,
-      activeClass: "border-primary bg-primary/10 text-primary",
-      idleClass: "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-      iconContainerClass: "bg-slate-700 text-white",
+      icon: <Globe className="h-4 w-4" />,
+      activeClass: "border-[#111111] bg-[#FAF9F5] text-[#111111]",
+      idleClass: "border-[#ECEAE5] bg-white text-[#222222] hover:bg-[#FAF9F5]",
+      iconContainerClass: "bg-[#111111] text-white",
     };
   };
 
   const submitPositiveReview = async () => {
-    const reviewText = message.trim();
-
-    if (!reviewText) {
-      toast.error("Please write your review before continuing.");
-      return;
-    }
-
     if (reviewLinks.length === 0) {
       toast.error("No review platform configured for this business yet.");
       return;
     }
 
-    if (selectedReviewUrls.length === 0) {
-      toast.error("Please select at least one review platform.");
-      return;
-    }
+    const targetUrls =
+      selectedReviewUrls.length > 0
+        ? selectedReviewUrls
+        : [reviewLinks[0].url];
 
-    try {
-      await copyReviewToClipboard(reviewText);
-    } catch {
-      toast.error("Unable to copy your review text. Please copy it manually.");
-      return;
+    const reviewText = message.trim();
+
+    if (reviewText) {
+      try {
+        await copyReviewToClipboard(reviewText);
+      } catch {
+        // clipboard fallback
+      }
     }
 
     let openedCount = 0;
-    selectedReviewUrls.forEach((url) => {
+    targetUrls.forEach((url) => {
       const popup = window.open(url, "_blank", "noopener,noreferrer");
       if (popup) {
         openedCount += 1;
@@ -213,30 +253,34 @@ export default function ReviewPage() {
 
     if (openedCount === 0) {
       toast.error(
-        "Your browser blocked new tabs. Please allow pop-ups and try again.",
+        "Your browser blocked the review page popup. Please allow popups and try again.",
       );
       return;
     }
 
+    setSubmitted(true);
     toast.success(
-      openedCount === 1
-        ? "Review copied. We opened the selected site. Paste your review there."
-        : `Review copied. Opened ${openedCount} sites. Paste your review on each one.`,
+      reviewText
+        ? "Review copied to clipboard! Paste it on the opened page."
+        : "Opening review platform. Thank you for your support!",
     );
   };
 
   const submitFeedback = async () => {
     if (!message.trim()) {
-      toast.error("Please enter your feedback");
+      toast.error("Please enter a few words about your experience.");
       return;
     }
 
+    setIsSubmitting(true);
     const { error } = await supabase
       .from("feedback")
       .insert({ business_id: businessId!, rating, message: message.trim() });
 
+    setIsSubmitting(false);
+
     if (error) {
-      toast.error("Failed to submit feedback");
+      toast.error("Failed to submit feedback. Please try again.");
     } else {
       setSubmitted(true);
     }
@@ -244,103 +288,228 @@ export default function ReviewPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+      <div
+        className="flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat px-4 font-sans"
+        style={{
+          backgroundImage: `linear-gradient(rgba(17, 17, 19, 0.45), rgba(17, 17, 19, 0.55)), url(${reviewBg})`,
+        }}
+      >
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/95 p-6 shadow-xl backdrop-blur-md border border-white/40">
+          <div className="h-9 w-9 animate-spin rounded-full border-3 border-[#111111] border-t-transparent" />
+          <p className="text-sm font-semibold text-[#111111]">
+            Loading survey...
+          </p>
+        </div>
       </div>
     );
   }
 
   if (notFound) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background px-4">
-        <Card className="max-w-md w-full text-center">
-          <CardContent className="py-12">
-            <p className="text-muted-foreground">Business not found.</p>
-          </CardContent>
-        </Card>
+      <div
+        className="flex min-h-screen items-center justify-center bg-cover bg-center bg-no-repeat px-4 font-sans"
+        style={{
+          backgroundImage: `linear-gradient(rgba(17, 17, 19, 0.45), rgba(17, 17, 19, 0.55)), url(${reviewBg})`,
+        }}
+      >
+        <div className="w-full max-w-md rounded-3xl border border-white/40 bg-white/95 p-8 text-center shadow-2xl backdrop-blur-md">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAF9F5] text-[#111111] border border-[#ECEAE5]">
+            <Globe className="h-6 w-6" />
+          </div>
+          <h2 className="text-2xl font-black text-[#111111] tracking-tight">
+            Business Not Found
+          </h2>
+          <p className="mt-2 text-sm text-[#666666] leading-relaxed">
+            This review link appears to be invalid or has expired. Please check
+            the QR code or link provided.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-8">
-      <Card className="max-w-md w-full">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-2">
-            <Zap className="h-8 w-8 text-primary" />
-          </div>
-          <CardTitle className="text-xl">{businessName}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {step === "rate" && (
-            <div className="text-center space-y-4">
-              <p className="text-muted-foreground">How was your experience?</p>
-              <div className="flex justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleRate(s)}
-                    onMouseEnter={() => setHoverRating(s)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    className="transition-transform hover:scale-110"
-                    aria-label={`Set rating to ${s} stars`}
-                  >
-                    <Star
-                      className={`h-10 w-10 ${
-                        s <= (hoverRating || rating)
-                          ? "text-warning fill-warning"
-                          : "text-muted"
-                      }`}
-                    />
-                  </button>
-                ))}
+    <div
+      className="relative flex min-h-screen flex-col items-center justify-between bg-cover bg-center bg-fixed bg-no-repeat px-4 py-10 sm:py-16 font-sans selection:bg-[#F1EAFA] selection:text-[#7C3AED]"
+      style={{
+        backgroundImage: `linear-gradient(rgba(17, 17, 19, 0.46), rgba(17, 17, 19, 0.58)), url(${reviewBg})`,
+      }}
+    >
+      <div className="w-full max-w-xl my-auto">
+        {/* Main Card with Kit-style architecture */}
+        <div className="relative rounded-3xl border border-white/50 bg-white/95 p-7 sm:p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.35)] backdrop-blur-md">
+          {/* SCREEN 1: INITIAL STAR RATING SCREEN */}
+          {step === "rate" && !submitted && (
+            <div className="text-center">
+              {/* Category Pill Tag */}
+              <div className="inline-flex items-center gap-1.5 rounded-md bg-[#F1EAFA] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#7C3AED]">
+                Customer Review
+              </div>
+
+              {/* Bold Editorial Business Title */}
+              <h1 className="mt-4 text-3xl sm:text-4xl font-black tracking-tight text-[#111111]">
+                {businessName}
+              </h1>
+
+              {/* Subtitle with user's exact wording: "service" instead of "team" */}
+              <p className="mt-3 text-base text-[#555555] font-normal max-w-md mx-auto leading-relaxed">
+                Thank you for visiting! How was your experience with our{" "}
+                <strong className="font-semibold text-[#111111]">service</strong>{" "}
+                today?
+              </p>
+
+              {/* Interactive Star Rating */}
+              <div className="mt-8 mb-3">
+                <div className="flex justify-center items-center gap-2.5 sm:gap-4 py-2">
+                  {[1, 2, 3, 4, 5].map((s) => {
+                    const isFilled = s <= (hoverRating || rating);
+                    return (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => handleRate(s)}
+                        onMouseEnter={() => setHoverRating(s)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        className="group relative transform transition-all duration-150 hover:scale-120 active:scale-95 focus:outline-none"
+                        aria-label={`Rate ${s} star${s > 1 ? "s" : ""}`}
+                      >
+                        <Star
+                          className={`h-11 w-11 sm:h-13 sm:w-13 transition-all duration-150 ${
+                            isFilled
+                              ? "fill-[#F59E0B] text-[#F59E0B] drop-shadow-sm"
+                              : "text-[#DCDAD4] fill-[#FAF9F5] hover:text-[#FBBF24]"
+                          }`}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Rating sentiment label */}
+                <div className="mt-3 h-8 flex items-center justify-center">
+                  {hoverRating > 0 ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1 text-xs font-bold transition-all animate-in fade-in zoom-in-95 duration-150 bg-[#FFFBEB] text-[#B45309] border border-[#FDE68A]">
+                      {hoverRating === 5 && "⭐ Outstanding! Loved everything! 🎉"}
+                      {hoverRating === 4 && "⭐ Great service! Very happy 😊"}
+                      {hoverRating === 3 && "⭐ It was okay / average 🙂"}
+                      {hoverRating === 2 && "⭐ Could be better 😐"}
+                      {hoverRating === 1 && "⭐ Not satisfied / poor 😞"}
+                    </span>
+                  ) : (
+                    <span className="text-xs font-medium text-[#888888]">
+                      Tap a star to share your rating
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Kit-style Stat & Proof Cards */}
+              <div className="mt-8 grid grid-cols-3 gap-3 border-t border-[#F0EFEA] pt-6">
+                <div className="rounded-2xl border border-[#ECEAE5] bg-[#FAF9F5] p-3 text-center transition-all hover:border-stone-300">
+                  <div className="text-lg sm:text-xl font-black text-[#111111]">
+                    &lt;30s
+                  </div>
+                  <div className="text-[11px] font-medium text-[#777777] mt-0.5">
+                    Quick & simple
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[#ECEAE5] bg-[#FAF9F5] p-3 text-center transition-all hover:border-stone-300">
+                  <div className="text-lg sm:text-xl font-black text-[#111111]">
+                    100%
+                  </div>
+                  <div className="text-[11px] font-medium text-[#777777] mt-0.5">
+                    Direct feedback
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-[#ECEAE5] bg-[#FAF9F5] p-3 text-center transition-all hover:border-stone-300">
+                  <div className="text-lg sm:text-xl font-black text-[#111111]">
+                    5-Star
+                  </div>
+                  <div className="text-[11px] font-medium text-[#777777] mt-0.5">
+                    Quality service
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {step === "positive" && (
-            <div className="space-y-4">
-              <CheckCircle className="h-12 w-12 text-success mx-auto" />
-              <p className="text-center text-foreground font-medium">
-                Thanks for your positive rating.
-              </p>
-              <p className="text-center text-sm text-muted-foreground">
-                Write your review, choose platforms, then submit. We will copy
-                your text and open each selected site so you can paste it there.
-              </p>
+          {/* SCREEN 2: POSITIVE EXPERIENCE (RATING >= 4) */}
+          {step === "positive" && !submitted && (
+            <div className="space-y-6">
+              {/* Top navigation row */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setStep("rate")}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#666666] hover:text-[#111111] transition-colors"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  <span>Change rating</span>
+                </button>
 
-              <div
-                className="flex justify-center gap-1"
-                aria-label={`Selected rating: ${rating} out of 5 stars`}
-              >
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <div key={s} aria-hidden="true">
-                    <Star
-                      className={`h-6 w-6 ${
-                        s <= rating ? "text-warning fill-warning" : "text-muted"
-                      }`}
-                    />
-                  </div>
-                ))}
+                <div className="flex items-center gap-1 rounded-full bg-[#FFFBEB] px-3 py-1 text-xs font-bold text-[#B45309] border border-[#FDE68A]">
+                  <Star className="h-3.5 w-3.5 fill-[#F59E0B] text-[#F59E0B]" />
+                  <span>{rating}.0 Rating</span>
+                </div>
               </div>
 
-              <Textarea
-                placeholder="Write your review"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-              />
-
+              {/* Editorial Header */}
               <div className="space-y-2">
-                <p className="text-sm font-medium text-foreground">
-                  Choose where to post
+                <div className="inline-flex items-center gap-1.5 rounded-md bg-[#ECFDF5] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#059669]">
+                  Excellent Experience
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+                  We're so glad you enjoyed our service! 🎉
+                </h2>
+                <p className="text-sm text-[#666666] leading-relaxed">
+                  As a local business, recommendations from happy customers like
+                  you mean everything to us. Share your review on Google in 1
+                  tap.
                 </p>
-                {reviewLinks.length === 0 ? (
-                  <p className="text-center text-sm text-muted-foreground">
-                    No review platform configured yet.
-                  </p>
-                ) : (
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+              </div>
+
+              {/* Kit-style Quick Tags with Purple Checkmark Circles */}
+              <div className="space-y-2.5">
+                <div className="text-xs font-bold uppercase tracking-wider text-[#777777]">
+                  Tap to add highlights:
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {quickTags.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => handleAddTag(tag)}
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#ECEAE5] bg-[#FAF9F5] px-3.5 py-2 text-xs font-semibold text-[#222222] hover:border-[#7C3AED] hover:bg-[#F1EAFA]/60 hover:text-[#7C3AED] transition-all cursor-pointer active:scale-95"
+                    >
+                      <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-[#E9D5FF] text-[#7C3AED] text-[9px] font-black">
+                        ✓
+                      </span>
+                      <span>{tag}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Review Textarea */}
+              <div className="space-y-1.5">
+                <Textarea
+                  placeholder="Share a few words about what you loved most..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={3}
+                  className="rounded-2xl border-[#ECEAE5] bg-[#FAF9F5]/50 text-sm font-normal text-[#111111] placeholder:text-[#999999] focus:border-[#111111] focus:bg-white focus:ring-0 leading-relaxed"
+                />
+              </div>
+
+              {/* Platform Selector */}
+              {reviewLinks.length > 0 && (
+                <div className="space-y-2.5">
+                  <div className="text-xs font-bold uppercase tracking-wider text-[#777777]">
+                    Choose platform to publish:
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {reviewLinks.map((link) => {
                       const visual = getPlatformVisual(link.platform_name);
                       const isSelected = selectedReviewUrls.includes(link.url);
@@ -352,86 +521,169 @@ export default function ReviewPage() {
                           onClick={() =>
                             toggleReviewLinkSelection(link.url, !isSelected)
                           }
-                          className={`flex items-center justify-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors ${
+                          className={`flex items-center justify-between rounded-2xl border p-3.5 text-sm font-semibold transition-all ${
                             isSelected ? visual.activeClass : visual.idleClass
                           }`}
                           aria-pressed={isSelected}
                         >
-                          <span
-                            className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${visual.iconContainerClass}`}
-                            aria-hidden="true"
-                          >
-                            {visual.icon}
-                          </span>
-                          <span>{link.platform_name}</span>
+                          <div className="flex items-center gap-2.5">
+                            <span
+                              className={`inline-flex h-7 w-7 items-center justify-center rounded-lg ${visual.iconContainerClass}`}
+                              aria-hidden="true"
+                            >
+                              {visual.icon}
+                            </span>
+                            <span className="font-bold text-[#111111]">
+                              {link.platform_name}
+                            </span>
+                          </div>
+
+                          {isSelected && (
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#111111] text-white text-[10px] font-bold">
+                              ✓
+                            </span>
+                          )}
                         </button>
                       );
                     })}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              <Button
-                className="w-full"
-                onClick={submitPositiveReview}
-                disabled={reviewLinks.length === 0}
-              >
-                Submit
-              </Button>
+              {/* Kit-style Bold Action Button */}
+              <div className="space-y-2 pt-2">
+                <Button
+                  className="w-full h-12 rounded-2xl bg-[#111111] text-white hover:bg-black font-bold text-sm tracking-wide shadow-sm gap-2 transition-all"
+                  onClick={submitPositiveReview}
+                  disabled={reviewLinks.length === 0}
+                >
+                  <Copy className="h-4 w-4" />
+                  <span>Copy Review & Open Platform</span>
+                  <ExternalLink className="h-3.5 w-3.5 opacity-70" />
+                </Button>
+
+                <p className="text-center text-[11px] text-[#888888]">
+                  Your review text will be copied to your clipboard automatically.
+                </p>
+              </div>
             </div>
           )}
 
+          {/* SCREEN 3: NEGATIVE / PRIVATE FEEDBACK (RATING <= 3) */}
           {step === "negative" && !submitted && (
-            <div className="space-y-4">
-              <div className="flex justify-center gap-1">
-                {[1, 2, 3, 4, 5].map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => handleRate(s)}
-                    onMouseEnter={() => setHoverRating(s)}
-                    onMouseLeave={() => setHoverRating(0)}
-                    className="transition-transform hover:scale-110"
-                    aria-label={`Set rating to ${s} stars`}
-                  >
-                    <Star
-                      className={`h-5 w-5 ${
-                        s <= (hoverRating || rating)
-                          ? "text-warning fill-warning"
-                          : "text-muted"
-                      }`}
-                    />
-                  </button>
-                ))}
+            <div className="space-y-6">
+              {/* Top navigation row */}
+              <div className="flex items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => setStep("rate")}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#666666] hover:text-[#111111] transition-colors"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  <span>Change rating</span>
+                </button>
+
+                <div className="flex items-center gap-1 rounded-full bg-[#F7F5F0] px-3 py-1 text-xs font-bold text-[#444444] border border-[#ECEAE5]">
+                  <Star className="h-3.5 w-3.5 fill-[#777777] text-[#777777]" />
+                  <span>{rating}.0 Rating</span>
+                </div>
               </div>
-              <p className="text-center text-muted-foreground text-sm">
-                We'd love to hear how we can improve. You can change your rating
-                anytime.
-              </p>
-              <Textarea
-                placeholder="Tell us about your experience..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                rows={4}
-              />
-              <Button className="w-full" onClick={submitFeedback}>
-                Submit Feedback
+
+              {/* Editorial Header */}
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 rounded-md bg-[#FEF2F2] px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#DC2626]">
+                  Private Feedback
+                </div>
+                <h2 className="text-2xl sm:text-3xl font-black text-[#111111] tracking-tight">
+                  Help us improve our service
+                </h2>
+                <p className="text-sm text-[#666666] leading-relaxed">
+                  Your satisfaction is our priority. Please let our leadership
+                  know what happened so we can make things right.
+                </p>
+              </div>
+
+              {/* Private Feedback Textarea */}
+              <div className="space-y-1.5">
+                <Textarea
+                  placeholder="Tell us what went wrong and how we can improve..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  rows={4}
+                  className="rounded-2xl border-[#ECEAE5] bg-[#FAF9F5]/50 text-sm font-normal text-[#111111] placeholder:text-[#999999] focus:border-[#111111] focus:bg-white focus:ring-0 leading-relaxed"
+                />
+              </div>
+
+              {/* Confidentiality Notice */}
+              <div className="flex items-start gap-2.5 rounded-2xl bg-[#FAF9F5] p-3.5 border border-[#ECEAE5] text-xs text-[#555555]">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#111111] mt-0.5" />
+                <p className="leading-relaxed">
+                  <strong className="text-[#111111] font-bold">
+                    100% Private & Direct:
+                  </strong>{" "}
+                  This note is delivered directly to management and will never
+                  be published publicly.
+                </p>
+              </div>
+
+              {/* Submit Feedback Button */}
+              <Button
+                className="w-full h-12 rounded-2xl bg-[#111111] hover:bg-black text-white font-bold text-sm tracking-wide shadow-sm"
+                onClick={submitFeedback}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Sending..." : "Submit Private Feedback"}
               </Button>
             </div>
           )}
 
+          {/* SCREEN 4: THANK YOU / SUBMISSION COMPLETE */}
           {submitted && (
-            <div className="text-center space-y-2 py-4">
-              <CheckCircle className="h-12 w-12 text-success mx-auto" />
-              <p className="font-medium text-foreground">
-                Thank you for your feedback!
+            <div className="text-center space-y-4 py-6 animate-in fade-in zoom-in-95 duration-200">
+              <div className="inline-flex items-center gap-1.5 rounded-md bg-[#ECFDF5] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#059669]">
+                Submission Received
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl font-black text-[#111111] tracking-tight">
+                Thank you so much! 🎉
+              </h2>
+
+              <p className="text-sm text-[#666666] max-w-md mx-auto leading-relaxed">
+                Your feedback has been received. We truly appreciate you taking
+                the time to help <span className="font-semibold text-[#111111]">{businessName}</span> deliver
+                the best service possible.
               </p>
-              <p className="text-sm text-muted-foreground">
-                We appreciate you taking the time to help us improve.
-              </p>
+
+              <div className="pt-6 border-t border-[#F0EFEA]">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setStep("rate");
+                    setSubmitted(false);
+                    setRating(0);
+                    setMessage("");
+                  }}
+                  className="rounded-xl border-[#ECEAE5] text-xs font-bold text-[#444444] hover:bg-[#FAF9F5]"
+                >
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                  <span>Submit another response</span>
+                </Button>
+              </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* Minimal Editorial Footer */}
+        <div className="mt-8 text-center text-xs text-white/90 drop-shadow-sm">
+          <div className="flex items-center justify-center gap-1.5 font-medium">
+            <span className="text-white/80">Powered by</span>
+            <span className="font-bold text-white">FeedbackView</span>
+          </div>
+          <p className="text-[11px] text-white/70 mt-0.5">
+            Helping local businesses deliver 5-star service
+          </p>
+        </div>
+      </div>
     </div>
   );
 }

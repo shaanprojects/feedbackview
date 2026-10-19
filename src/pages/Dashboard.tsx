@@ -1090,9 +1090,9 @@ export default function Dashboard() {
         {/* Page Content */}
         <main className="flex-1 p-6 lg:p-8">
           <div className="mx-auto max-w-7xl space-y-8">
-          <div className={`grid grid-cols-1 gap-6 ${activeTab === "dashboard" ? "lg:grid-cols-[3fr_1fr]" : ""}`}>
+          <div className="w-full">
             <section className="relative overflow-hidden rounded-3xl border-2 border-slate-400/80 bg-gradient-to-br from-white/90 to-slate-50/80 px-4 py-5 shadow-sm backdrop-blur-md sm:px-8 sm:py-6">
-              <div className="relative grid gap-8 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+              <div className={`relative grid gap-6 lg:gap-8 ${activeTab === "dashboard" ? "lg:grid-cols-[1.15fr_1.1fr_0.95fr]" : "lg:grid-cols-[1.15fr_1fr]"} lg:items-start`}>
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.34em] text-blue-700">
                     FeedbackView
@@ -1164,106 +1164,93 @@ export default function Dashboard() {
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
 
-            {activeTab === "dashboard" && (
-              <Card className="glass-card glass-card-hover h-full border-2 border-slate-400/80">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">
-                    {showBusinessQr ? "Business QR" : "Business Info"}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {!showBusinessQr && (
-                    <>
-                      <div>
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                          Name
-                        </p>
-                        <p className="truncate text-base font-bold text-slate-900">
-                          {business?.name || "Not Set"}
-                        </p>
+                {activeTab === "dashboard" && (
+                  <div className="w-full flex flex-col justify-between rounded-2xl border border-slate-300/90 bg-white/90 p-5 shadow-sm backdrop-blur-sm space-y-4 lg:self-start">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <p className="text-sm font-bold text-slate-900">
+                        {showBusinessQr ? "Business QR" : "Business Info"}
+                      </p>
+                    </div>
+
+                    {!showBusinessQr ? (
+                      <div className="space-y-3">
+                        <div>
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            Name
+                          </p>
+                          <p className="truncate text-base font-bold text-slate-900">
+                            {business?.name || "Not Set"}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            Status
+                          </p>
+                          <span
+                            className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                              business?.subscription_active
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            {business?.subscription_active ? "Active" : "Inactive"}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            Links
+                          </p>
+                          <p className="text-base font-bold text-slate-900">
+                            {activeLinks}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                            Feedback
+                          </p>
+                          <p className="text-base font-bold text-slate-900">
+                            {totalFeedback}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                          Status
-                        </p>
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            business?.subscription_active
-                              ? "bg-emerald-100 text-emerald-700"
-                              : "bg-red-100 text-red-700"
-                          }`}
+                    ) : (
+                      <div className="space-y-3">
+                        <div className="flex justify-center rounded-xl border border-slate-200 bg-white p-3">
+                          {reviewUrl ? (
+                            <QRCodeSVG id="qr-code" value={reviewUrl} size={112} />
+                          ) : (
+                            <p className="text-xs font-medium text-slate-500">
+                              No review link yet
+                            </p>
+                          )}
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+                          onClick={downloadQR}
+                          disabled={!reviewUrl}
                         >
-                          {business?.subscription_active ? "Active" : "Inactive"}
-                        </span>
+                          <Download className="mr-1 h-4 w-4" /> Download QR
+                        </Button>
                       </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                          Links
-                        </p>
-                        <p className="text-base font-bold text-slate-900">
-                          {activeLinks}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                          Feedback
-                        </p>
-                        <p className="text-base font-bold text-slate-900">
-                          {totalFeedback}
-                        </p>
-                      </div>
-                    </>
-                  )}
+                    )}
 
-                  {!showBusinessQr && (
                     <div className="pt-1">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                        onClick={() => setShowBusinessQr(true)}
+                        className="w-full border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+                        onClick={() => setShowBusinessQr((prev) => !prev)}
                       >
-                        Show QR
+                        {showBusinessQr ? "Show Info" : "Show QR"}
                       </Button>
                     </div>
-                  )}
-
-                  {showBusinessQr && (
-                    <div className="space-y-3">
-                      <div className="flex justify-center rounded-xl border border-slate-200 bg-white/85 p-3">
-                        {reviewUrl ? (
-                          <QRCodeSVG id="qr-code" value={reviewUrl} size={112} />
-                        ) : (
-                          <p className="text-xs font-medium text-slate-500">
-                            No review link yet
-                          </p>
-                        )}
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                        onClick={downloadQR}
-                        disabled={!reviewUrl}
-                      >
-                        <Download className="mr-1 h-4 w-4" /> Download QR
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full border-slate-300 bg-white/85 text-slate-800 hover:bg-white"
-                        onClick={() => setShowBusinessQr(false)}
-                      >
-                        Show Info
-                      </Button>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
 
           {activeTab === "dashboard" && (
